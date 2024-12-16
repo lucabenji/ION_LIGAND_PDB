@@ -1,6 +1,7 @@
+"""Useful functions"""
+
 import numpy as np
 
-def rotate
 
 def center_coords(coords):
 
@@ -10,46 +11,9 @@ def center_coords(coords):
 
     return centered_coords
 
+def rotate_coords(coords, phi, psi, theta):
 
-def random_place_molecules(
-    molecule_coords, box_dim, cutoff, num_molecules, existing_molecules=None
-):
-    """
-    Place a series of molecules randomly in a 3D box with a minimum cutoff distance, considering existing molecules.
-
-    Parameters:
-        molecule_coords (np.ndarray): Coordinates of the molecule (Nx3 array).
-        box_dim (tuple): Dimensions of the box (x, y, z).
-        cutoff (float): Minimum distance between any two molecules.
-        num_molecules (int): Number of molecules to place in the box.
-        existing_molecules (list of np.ndarray, optional): List of existing molecules already placed in the box.
-
-    Returns:
-        list of np.ndarray: A list of placed molecule coordinates (including existing ones).
-    """
-    if existing_molecules is None:
-        existing_molecules = []
-
-    placed_molecules = existing_molecules.copy()  # Start with existing molecules
-    box_x, box_y, box_z = box_dim
-
-    def is_valid_placement(new_coords, placed_molecules, cutoff):
-        """
-        Check if the new molecule coordinates are valid by ensuring that they respect
-        the minimum cutoff distance from all other placed molecules, including existing ones.
-        """
-        for placed in placed_molecules:
-            #print(placed)
-            #print(new_coords)
-            distances = np.linalg.norm(new_coords[:, None, :] - placed[None, :, :], axis=-1)
-            if np.any(distances < cutoff):
-                return False
-        return True
-
-    while len(placed_molecules) < num_molecules + len(existing_molecules):
-        # Generate random rotation using Euler angles
-        theta, phi, psi = np.random.uniform(0, 2 * np.pi, size=3)
-        rotation_matrix = np.array([
+    rotation_matrix = np.array([
             [
                 np.cos(psi) * np.cos(phi) - np.sin(psi) * np.cos(theta) * np.sin(phi),
                 -np.sin(psi) * np.cos(phi) - np.cos(psi) * np.cos(theta) * np.sin(phi),
@@ -66,16 +30,49 @@ def random_place_molecules(
                 np.cos(theta),
             ],
         ])
+    
+    rotated_coords = np.dot(coords, rotation_matrix.T)
+
+    return rotated_coords
+
+def translate_coords(coords, vec):
+
+    translated_coords = coords + vec
+
+    return translated_coords
+
+def random_place_molecules(coords, box_dim, cutoff, num, existing_coords=None):
+    
+    if existing_coords is None:
+        existing_coords = []
+
+    placed_coords = existing_coords.copy()  # Start with existing molecules
+    box_x, box_y, box_z = box_dim
+
+    def is_valid_placement(new_coords, placed_coords, cutoff):
+        
+        for placed in placed_coords:
+            #print(placed)
+            #print(new_coords)
+            distances = np.linalg.norm(new_coords[:, None, :] - placed[None, :, :], axis=-1)
+            if np.any(distances < cutoff):
+                return False
+        return True
+
+    while len(placed_coords) < num + len(existing_coords):
+        
+        # Generate random rotation using Euler angles
+        theta, phi, psi = np.random.uniform(0, 2 * np.pi, size=3)
 
         # Apply rotation to the molecule coordinates
-        rotated_coords = np.dot(molecule_coords, rotation_matrix.T)
+        rotated_coords = rotate_coords(coords, phi, psi, theta)
 
         # Generate random position in the box
         random_position = np.random.uniform(0, [box_x, box_y, box_z])
-        translated_coords = rotated_coords + random_position
+        translated_coords = translate_coords(rotated_coords, random_position)
 
         # Validate placement
-        if is_valid_placement(translated_coords, placed_molecules, cutoff):
-            placed_molecules.append(translated_coords)
+        if is_valid_placement(translated_coords, placed_coords, cutoff):
+            placed_coords.append(translated_coords)
 
-    return placed_molecules
+    return placed_coords
