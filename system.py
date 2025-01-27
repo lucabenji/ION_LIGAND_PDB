@@ -12,14 +12,8 @@ class System:
         self.res_list = res_list
         self.box = box
         self.n_res = len(res_list)
+        self.volume = np.prod(box)
 
-    def get_system_coords(self):
-        
-        coords = []
-        for res in self.res_list:
-            coords.append(res.coords)
-
-        return coords
 
     def add_residue(self, res: Residue, cutoff=4.0, n=1):
         
@@ -61,3 +55,16 @@ class System:
                 count_atm += 1
             print('TER')
         print('END')
+
+    def get_system_coords(self):
+        
+        coords = []
+        for res in self.res_list:
+            coords.append(res.coords)
+
+        return coords
+    
+    def set_box(self, box: np.ndarray):
+
+        self.box = box
+        self.volume = np.prod(box)

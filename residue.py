@@ -1,20 +1,21 @@
-"""Residue"""
+"""
+Residue
+"""
 
+import typing as tp
 import numpy as np
 
 from functions import center_coords
 
 class Residue:
 
-    def __init__(self, atom_list=[], coords=[], res_name=None):
+    def __init__(self, atom_list: tp.List[str]=[], coords: tp.Union[list, np.ndarray]=[], res_name: tp.Optional[str]=None):
         
         self.atoms = atom_list
-        self.coords = coords
+        self.coords = coords if type(coords) == np.ndarray else np.array(coords)
         self.name = res_name
         self.n_atoms = len(self.atoms)
     
-    def copy(self):
-        return Residue(self.atoms, self.coords, self.name)
     
     @classmethod
     def read_from_pdb(cls, filename, res_name):
@@ -41,3 +42,6 @@ class Residue:
     def centering(self):
         
         self.coords = center_coords(self.coords)
+
+    def copy(self):
+        return Residue(self.atoms, self.coords, self.name)
