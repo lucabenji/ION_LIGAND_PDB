@@ -1,8 +1,7 @@
 """
-Parser for the main program
+Parser for the main program and available commands
 """
 
-import os
 import argparse
 
 from commands import *
@@ -26,17 +25,23 @@ command_subparsers = command_parser.add_subparsers(dest="command", required=True
 # add_ion parser
 ion_parser = command_subparsers.add_parser('add_ion')
 ion_parser.add_argument('ION', type=str, help='Name of the ion.')
-ion_parser.add_argument('-n', dest='n', type=int, default=1, help='Number of ions (default=1)')
+ion_parser.add_argument('n', type=int, nargs="?", default=1, help='Number of ions (default=1)')
 ion_parser.add_argument('-cutoff', dest='cutoff', type=float, default=4.0, help='Minimum distance for placing ions in Ang (default=4.0)')
 ion_parser.set_defaults(func=add_ion)
 
 # add_ligand parser
 lig_parser = command_subparsers.add_parser('add_ligand')
+lig_parser.add_argument('RES', type=str, nargs="?", help='Ligand residue name (max. 3 characters)')
+lig_parser.add_argument('n', type=int, nargs="?", default=1, help='Number of ligands (default=1)')
 lig_parser.add_argument('-f', dest='file_name', type=str, required=True, help='Ligand file name')
-lig_parser.add_argument('-n', dest='n', type=int, default=1, help='Number of ligands (default=1)')
+#lig_parser.add_argument('-n', dest='n', type=int, default=1, help='Number of ligands (default=1)')
 lig_parser.add_argument('-cutoff', dest='cutoff', type=float, default=4.0, help='Minimum distance for placing ligands in Ang (default=4.0)')
-lig_parser.add_argument('RES', type=str, help='Ligand residue name (max. 3 characters)')
 lig_parser.set_defaults(func=add_ligand)
+
+# generate_pdb parser
+pdb_parser = command_subparsers.add_parser('generate_pdb')
+#pdb_parser.add_argument('out_file', type=str, help='Name of the pdb file where the system will be saved.')
+pdb_parser.set_defaults(func=generate_pdb)
 
 # quit parser
 quit_parser = command_subparsers.add_parser('quit')

@@ -13,9 +13,30 @@ class Residue:
         
         self.atoms = atom_list
         self.coords = coords if type(coords) == np.ndarray else np.array(coords)
-        self.name = res_name
-        self.n_atoms = len(self.atoms)
+        self.resname = res_name
+
+        self.__atom_id = np.arange(1, self.n_atoms + 1)
+        self.__res_num = 1
     
+    @property
+    def n_atoms(self):
+        return len(self.atoms)
+
+    @property
+    def atom_id(self):
+        return self.__atom_id
+
+    @atom_id.setter
+    def atom_id(self, id_list: np.ndarray):
+        self.__atom_id = id_list
+
+    @property
+    def res_num(self):
+        return self.__res_num
+    
+    @res_num.setter
+    def res_num(self, num):
+        self.__res_num = num
     
     @classmethod
     def read_from_pdb(cls, filename, res_name):
@@ -44,4 +65,4 @@ class Residue:
         self.coords = center_coords(self.coords)
 
     def copy(self):
-        return Residue(self.atoms, self.coords, self.name)
+        return Residue(self.atoms, self.coords, self.resname)

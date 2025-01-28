@@ -76,3 +76,25 @@ def random_place_molecules(coords, box_dim, cutoff, num, existing_coords=None):
             placed_coords.append(translated_coords)
 
     return placed_coords
+
+def write_pdb_line(atom_id: int, atom_name: str, res_name: str, res_number: str, coords: np.ndarray, 
+                   alternate_location=' ', chain_id=' ', element=' ') -> str:
+    
+    format_line = (
+        "ATOM  {atom_id:5d} {atom_name:>3s}{alternate_location} {residue_name:<3s} {chain_id}{residue_number:4d}    "
+        "{x:8.3f}{y:8.3f}{z:8.3f}  1.00  0.00           {element:>2}"
+    )
+
+    pdb_line = format_line.format(  atom_id=atom_id, 
+                                    atom_name=atom_name, 
+                                    alternate_location=alternate_location, 
+                                    residue_name=res_name,
+                                    chain_id = chain_id,
+                                    residue_number = res_number+1,
+                                    x = coords[0],
+                                    y = coords[1],
+                                    z = coords[2],
+                                    element = element
+                                    )
+    
+    return pdb_line

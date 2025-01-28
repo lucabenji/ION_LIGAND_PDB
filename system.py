@@ -2,69 +2,83 @@
 import numpy as np
 import typing as tp
 
-from functions import random_place_molecules
+from functions import random_place_molecules, write_pdb_line
 from residue import Residue
 
 class System:
 
     def __init__(self, res_list: tp.List[Residue]=[], box=np.array([40.0, 40.0, 40.0])):
         
-        self.res_list = res_list
-        self.box = box
-        self.n_res = len(res_list)
-        self.volume = np.prod(box)
+        self.residues = res_list
+        self.__box = box
 
-
-    def add_residue(self, res: Residue, cutoff=4.0, n=1):
-        
-        sys_coords = self.get_system_coords()
-        res.centering()
-        new_coords = random_place_molecules(res.coords, self.box, cutoff, n, sys_coords)
-
-        for i in range(self.n_res, self.n_res + n):
-            new_res = res.copy()
-            new_res.coords = new_coords[i]
-            self.res_list.append(new_res)
-
-        self.n_res += n
+    @property
+    def box(self):
+        return self.__box
     
-    def generate_pdb(self):
+    @box.setter
+    def box(self, box_dim: np.ndarray):
+        self.__box = box_dim
+
+    @property
+    def volume(self):
+        return np.prod(self.__box)
+    
+    @property
+    def system_atoms(self):
         
-        format_line = (
-        "ATOM  {atom_id:5d} {atom_name:>3s}{alternate_location} {residue_name:<3s} {chain_id}{residue_number:4d}    "
-        "{x:8.3f}{y:8.3f}{z:8.3f}  1.00  0.00           {element:>2}"
-    )
+        atoms = []
+        for res in self.residues:
+            atoms += res.atoms
+        return atoms
 
-        count_atm = 1
-        for i in range(self.n_res):
-            res = self.res_list[i]
-
-            for j in range(res.n_atoms):
-                pdb_line = format_line.format(atom_id=count_atm, 
-                                              atom_name=res.atoms[j], 
-                                              alternate_location=' ', 
-                                              residue_name=res.name,
-                                              chain_id = ' ',
-                                              residue_number = i+1,
-                                              x = res.coords[j, 0],
-                                              y = res.coords[j, 1],
-                                              z = res.coords[j, 2],
-                                              element = ''
-                                              ) 
-                print(pdb_line)
-                count_atm += 1
-            print('TER')
-        print('END')
-
-    def get_system_coords(self):
+    @property
+    def system_coords(self):
         
         coords = []
-        for res in self.res_list:
+        for res in self.residues:
             coords.append(res.coords)
 
         return coords
     
-    def set_box(self, box: np.ndarray):
+    @property
+    def n_atoms(self):
 
-        self.box = box
-        self.volume = np.prod(box)
+        n = 0
+        for res in self.residues:
+            n += res.n_atoms
+        
+        return n
+
+    @property
+    def n_res(self):
+        return len(self.residues)
+        
+
+    def add_residue(self, res: Residue, cutoff=4.0, n=1):
+        
+        res.centering()
+
+        new_coords = random_place_molecules(res.coords, self.box, cutoff, n, self.system_coords)
+
+        for i in range(self.n_res, self.n_res + n):
+            new_res = res.copy()
+            new_res.coords = new_coords[i]
+            new_res.res_num = i
+            new_res.atom_id = res.atom_id + self.n_atoms
+            self.residues.append(new_res)
+    
+    def generate_pdb(self):
+   
+
+        for res in self.residues:
+            for i in range(res.n_atoms):
+                pdb_line = write_pdb_line(atom_id=res.atom_id[i], 
+                                              atom_name=res.atoms[i], 
+                                              res_name=res.resname,
+                                              res_number = res.res_num,
+                                              coords = res.coords[i]
+                                              ) 
+                print(pdb_line)
+            print('TER')
+        print('END')
