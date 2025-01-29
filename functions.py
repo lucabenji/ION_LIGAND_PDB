@@ -2,7 +2,24 @@
 
 import numpy as np
 
+# constant
+Na = 6.022e23 # Avogadro number (mol^-1)
 
+# concentration from n res
+def evaluate_concentration(n: int, volume: float):
+    
+    conc = n/((volume*1e-27)*Na)
+
+    return conc
+
+# n res from concentration
+def evaluate_n_from_concentration(conc: float, volume: float) -> int:
+
+    n = conc*((volume*1e-27)*Na)
+
+    return round(n)
+
+# function for residue and system coordinates
 def center_coords(coords):
 
     center = np.mean(coords, axis=0)
@@ -77,6 +94,7 @@ def random_place_molecules(coords, box_dim, cutoff, num, existing_coords=None):
 
     return placed_coords
 
+# function for pdb outfile
 def write_pdb_line(atom_id: int, atom_name: str, res_name: str, res_number: str, coords: np.ndarray, 
                    alternate_location=' ', chain_id=' ', element=' ') -> str:
     

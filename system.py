@@ -2,7 +2,7 @@
 import numpy as np
 import typing as tp
 
-from functions import random_place_molecules, write_pdb_line
+from functions import random_place_molecules, write_pdb_line, evaluate_concentration
 from residue import Residue
 
 class System:
@@ -82,3 +82,20 @@ class System:
                 print(pdb_line)
             print('TER')
         print('END')
+
+    def get_number_of_res(self, resname: str) -> int:
+        
+        count = 0
+        for res in self.residues:
+            if res.resname == resname:
+                count += 1
+        
+        return count
+    
+    def get_res_concentration(self, resname: str) -> float:
+
+        n_res = self.get_number_of_res(resname)
+
+        conc = evaluate_concentration(n_res, self.volume)
+
+        return conc

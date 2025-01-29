@@ -8,7 +8,7 @@ from commands import *
 
 # Main parser
 main_parser = argparse.ArgumentParser(description="Ion Ligand PDB generator by Luca B.", add_help=True)
-main_parser.add_argument("-i", dest="input_file", help="Input file with command instructions.", default=None, type=str)
+main_parser.add_argument("-i", dest="input_file", help="Input file with command instructions.", default=None, type=str, metavar='input.in')
 main_args = main_parser.parse_args()
 
 # Main parse argument
@@ -25,17 +25,22 @@ command_subparsers = command_parser.add_subparsers(dest="command", required=True
 # add_ion parser
 ion_parser = command_subparsers.add_parser('add_ion')
 ion_parser.add_argument('ION', type=str, help='Name of the ion.')
-ion_parser.add_argument('n', type=int, nargs="?", default=1, help='Number of ions (default=1)')
 ion_parser.add_argument('-cutoff', dest='cutoff', type=float, default=4.0, help='Minimum distance for placing ions in Ang (default=4.0)')
+# only number or concentration can be choosen
+ion_number = ion_parser.add_mutually_exclusive_group()
+ion_number.add_argument('n', type=int, nargs="?", default=1, help='Number of ions (default=1)')
+ion_number.add_argument('-conc', dest='conc', type=float, help='Molar ion concentration.')
 ion_parser.set_defaults(func=add_ion)
 
 # add_ligand parser
 lig_parser = command_subparsers.add_parser('add_ligand')
 lig_parser.add_argument('RES', type=str, nargs="?", help='Ligand residue name (max. 3 characters)')
-lig_parser.add_argument('n', type=int, nargs="?", default=1, help='Number of ligands (default=1)')
 lig_parser.add_argument('-f', dest='file_name', type=str, required=True, help='Ligand file name')
-#lig_parser.add_argument('-n', dest='n', type=int, default=1, help='Number of ligands (default=1)')
 lig_parser.add_argument('-cutoff', dest='cutoff', type=float, default=4.0, help='Minimum distance for placing ligands in Ang (default=4.0)')
+# only number or concentration can be choosen
+lig_number = lig_parser.add_mutually_exclusive_group()
+lig_number.add_argument('n', type=int, nargs="?", default=1, help='Number of ligands (default=1)')
+lig_number.add_argument('-conc', dest='conc', type=float, help='Molar ligand concentration.')
 lig_parser.set_defaults(func=add_ligand)
 
 # generate_pdb parser

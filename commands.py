@@ -8,6 +8,7 @@ import sys
 from residue import Residue
 from system import System
 
+from functions import evaluate_n_from_concentration
 
 System = System()
 
@@ -15,20 +16,19 @@ def add_ion(args):
     """
     """
 
+    ion_coords = np.array([[0.0, 0.0, 0.0]])
     ion_name = args.ION
-    n = args.n
-    cutoff = args.cutoff 
-
-    #if args.coords:
-    #    ion_coords = args.coords
-    #else:
-    ion_coords = np.array([[0.0, 0.0, 0.0]]) 
-
     ion = Residue(atom_list=[ion_name], coords=ion_coords, res_name=ion_name)
-
+    
+    n = args.n
+    if args.conc:
+        n =  evaluate_n_from_concentration(args.conc, System.volume) - System.get_number_of_res(ion.resname)
+        print('\nSelected concentration for ion {}: {:.3f} M.'.format(ion_name, args.conc))
+    cutoff = args.cutoff
     System.add_residue(res=ion, cutoff=cutoff, n=n)
     
     print('\nAdded {} ion(s) with name {} using cutoff {:.2f} Ang'.format(n, ion.resname, cutoff))
+    print('Ion concentration is: {:.3f} M.'.format(System.get_res_concentration(ion.resname)))
 
 def add_ligand(args):
     """
