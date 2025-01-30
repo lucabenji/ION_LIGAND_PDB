@@ -58,6 +58,23 @@ def quit(args):
     print('Goodbye!')
     sys.exit()
 
+def remove_ion(args):
+
+    resname = args.ION
+    
+    System.remove_residue(resname)
+
+    print('\n Ions {} have been removed from the system.'.format(resname))
+
+def remove_ligand(args):
+
+    resname = args.LIG
+    
+    System.remove_residue(resname)
+
+    print('\n Ligands {} have been removed from the system.'.format(resname))
+
+
 def set_box(args):
     """
     """

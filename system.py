@@ -64,10 +64,25 @@ class System:
         for i in range(self.n_res, self.n_res + n):
             new_res = res.copy()
             new_res.coords = new_coords[i]
-            new_res.res_num = i
-            new_res.atom_id = res.atom_id + self.n_atoms
+            #new_res.res_num = i
+            #new_res.atom_id = res.atom_id + self.n_atoms
             self.residues.append(new_res)
-    
+        
+        self.enumerate_residues()
+
+    def enumerate_residues(self):
+
+        count_res = 1
+        count_atm = 1
+
+        for res in self.residues:
+            res
+            res.res_num = count_res
+            res.atom_id = np.arange(count_atm, count_atm + res.n_atoms)
+
+            count_res += 1
+            count_atm += res.n_atoms
+
     def generate_pdb(self):
    
 
@@ -99,3 +114,11 @@ class System:
         conc = evaluate_concentration(n_res, self.volume)
 
         return conc
+    
+    def remove_residue(self, resname: str):
+
+        for res in self.residues:
+            if res.resname == resname:
+                self.residues.remove(res)
+
+        self.enumerate_residues()

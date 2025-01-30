@@ -52,6 +52,16 @@ pdb_parser.set_defaults(func=generate_pdb)
 quit_parser = command_subparsers.add_parser('quit')
 quit_parser.set_defaults(func=quit)
 
+# remove_ion parser
+rm_ion_parser = command_subparsers.add_parser('remove_ion')
+rm_ion_parser.add_argument('ION', type=str, help='Name of the ion to remove.')
+rm_ion_parser.set_defaults(func=remove_ion)
+
+# remove_ion parser
+rm_ion_parser = command_subparsers.add_parser('remove_ligand')
+rm_ion_parser.add_argument('LIG', type=str, help='Name of the ligand to remove.')
+rm_ion_parser.set_defaults(func=remove_ligand)
+
 # set_box parser
 box_parser = command_subparsers.add_parser('set_box')
 box_parser.add_argument('DIM', type=float, help='Box dimension in Ang.')
