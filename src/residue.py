@@ -5,7 +5,7 @@ Residue
 import typing as tp
 import numpy as np
 
-from functions import center_coords
+from src.utils.functions import center_coords
 
 class Residue:
 

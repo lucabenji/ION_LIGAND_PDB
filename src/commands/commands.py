@@ -5,10 +5,10 @@ Available commands
 import numpy as np
 import sys
 
-from residue import Residue
-from system import System
+from src.residue import Residue
+from src.system import System
 
-from functions import evaluate_n_from_concentration
+from src.utils.functions import evaluate_n_from_concentration
 
 System = System()
 

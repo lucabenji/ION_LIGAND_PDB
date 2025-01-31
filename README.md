@@ -20,3 +20,4 @@ They can also be visualized with common molecular visualizer programs (Chimera, 
 - **Generate PDB filse readily usable for topology and input coordinates** - Obtained PDB files are readily usable for generating topology and input coordinates in Amber and Gromax.
 
 - **Visualize new PDBs with common molecular visualizer** - Obtained PDB files can be visualized with Chimera, PyMOL, VMD
+

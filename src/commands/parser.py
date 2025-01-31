@@ -4,7 +4,7 @@ Parser for the main program and available commands
 
 import argparse
 
-from commands import *
+from src.commands.commands import *
 
 # Main parser
 main_parser = argparse.ArgumentParser(description="Ion Ligand PDB generator by Luca B.", add_help=True)
@@ -75,5 +75,5 @@ volume_parser.set_defaults(func=set_volume)
 def execute_command(command):
     """
     """
-    args = command_parser.parse_args(command.split())
+    args = command_parser.parse_args(command)
     args.func(args)
