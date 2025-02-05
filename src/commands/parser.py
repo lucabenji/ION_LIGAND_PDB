@@ -16,7 +16,10 @@ input_file = main_args.input_file
 
 # activate reading mode
 if input_file is not None:
-    print('Coming soon!')
+    print('Reading commands from {}!'.format(input_file))
+    interactive_mode_status = False
+else:
+    interactive_mode_status = True
 
 # Command Parser
 command_parser = argparse.ArgumentParser(prog="", add_help=False)

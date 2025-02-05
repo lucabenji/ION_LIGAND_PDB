@@ -10,7 +10,7 @@ from src.system import System
 
 from src.utils.functions import evaluate_n_from_concentration
 
-System = System()
+Syst = System()
 
 def add_ion(args):
     """
@@ -22,13 +22,13 @@ def add_ion(args):
     
     n = args.n
     if args.conc:
-        n =  evaluate_n_from_concentration(args.conc, System.volume) - System.get_number_of_res(ion.resname)
+        n =  evaluate_n_from_concentration(args.conc, Syst.volume) - Syst.get_number_of_res(ion_name)
         print('\nSelected concentration for ion {}: {:.3f} M.'.format(ion_name, args.conc))
     cutoff = args.cutoff
-    System.add_residue(res=ion, cutoff=cutoff, n=n)
+    Syst.add_residue(res=ion, cutoff=cutoff, n=n)
     
     print('\nAdded {} ion(s) with name {} using cutoff {:.2f} Ang'.format(n, ion.resname, cutoff))
-    print('Ion concentration is: {:.3f} M.'.format(System.get_res_concentration(ion.resname)))
+    print('Ion concentration is: {:.3f} M.'.format(Syst.get_res_concentration(ion_name)))
 
 def add_ligand(args):
     """
@@ -41,7 +41,7 @@ def add_ligand(args):
 
     lig = Residue.read_from_pdb(filename=lig_file, res_name=res_name)
 
-    System.add_residue(res=lig, cutoff = cutoff, n=n)
+    Syst.add_residue(res=lig, cutoff = cutoff, n=n)
 
     print('\nAdded {} ligand(s) with residue name {} using cutoff {:.2f} Ang'.format(n, lig.resname, cutoff))
 
@@ -49,7 +49,7 @@ def generate_pdb(args):
     """
     """
     
-    System.generate_pdb()
+    Syst.generate_pdb()
 
 
 def quit(args):
@@ -62,7 +62,7 @@ def remove_ion(args):
 
     resname = args.ION
     
-    System.remove_residue(resname)
+    Syst.remove_residue(resname)
 
     print('\n Ions {} have been removed from the system.'.format(resname))
 
@@ -70,7 +70,7 @@ def remove_ligand(args):
 
     resname = args.LIG
     
-    System.remove_residue(resname)
+    Syst.remove_residue(resname)
 
     print('\n Ligands {} have been removed from the system.'.format(resname))
 
@@ -85,7 +85,7 @@ def set_box(args):
     System.box = box
     
     print('\nSystem has now a square box of {:.2f} Ang ({:.2f} nm).'.format(dim, dim/10))
-    print('Volume is {:.2f} Ang^3 ({:.2f} nm^3).'.format(System.volume, System.volume/1000))
+    print('Volume is {:.2f} Ang^3 ({:.2f} nm^3).'.format(Syst.volume, Syst.volume/1000))
 
 def set_volume(args):
 
@@ -94,5 +94,5 @@ def set_volume(args):
     box = box = np.array([dim, dim, dim])
 
     System.box = box
-    print('\nSystem has now a box volume of {:.2f} Ang^3 ({:.2f} nm^3).'.format(System.volume, System.volume/1000))
+    print('\nSystem has now a box volume of {:.2f} Ang^3 ({:.2f} nm^3).'.format(Syst.volume, Syst.volume/1000))
     print('Edge is {:.2f} Ang ({:.2f} nm).'.format(dim, dim/10))

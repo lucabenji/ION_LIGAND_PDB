@@ -1,13 +1,18 @@
 # ION_LIGAND_PDB
 
-
 ## Description
-
 
 ION_LIGAND_PDB is a python-based program that creates Protein Data Bank (PDB) files of metal ion-ligand systems with costumizable concentration.
 The program is desined for people who want to generate metal ion-systems for (but not only) molecular dynamics (MD) symulations.
 The PDB files are readily usable for generating topology and input coordinates files for all the most used MD programs (Amber, Gromax, NAMD, etc).
 They can also be visualized with common molecular visualizer programs (Chimera, PyMOL, VMD, etc).
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Examples](#examples)
 
 ## Features
 
@@ -21,3 +26,8 @@ They can also be visualized with common molecular visualizer programs (Chimera, 
 
 - **Visualize new PDBs with common molecular visualizer** - Obtained PDB files can be visualized with Chimera, PyMOL, VMD
 
+## Installation
+
+## Usage
+
+## Examples
