@@ -18,13 +18,13 @@ They can also be visualized with common molecular visualizer programs (Chimera, 
 
 - **Customize ion/ligand number and concentration** - Select the preferred number or concentration of ion/ligand in your system.
 
-- **Get ligand from common moecular file format** - Select ligands from PDB (.pdb), MOL2 (.mol2), and SDF (.sdf) files
+- **Get ligand from common molecular file formats** - Select ligands from PDB (.pdb), MOL2 (.mol2), and SDF (.sdf) files
 
-- **Choose system box dimension and volume for MD simulation** - Customize system box for your simulations
+- **Choose system box dimension and volume for MD simulations** - Customize system box for your simulations
 
-- **Generate PDB filse readily usable for topology and input coordinates** - Obtained PDB files are readily usable for generating topology and input coordinates in Amber and Gromax.
+- **Generate PDB files readily usable for topology and input coordinates** - Obtained PDB files are readily usable for generating topology and input coordinates in Amber and Gromax.
 
-- **Visualize new PDBs with common molecular visualizer** - Obtained PDB files can be visualized with Chimera, PyMOL, VMD
+- **Visualize new PDBs with common molecular visualizers** - Obtained PDB files can be visualized with Chimera, PyMOL, VMD
 
 ## Installation
 

@@ -39,7 +39,7 @@ def add_ligand(args):
     res_name = args.RES
     cutoff = args.cutoff
 
-    lig = Residue.read_from_pdb(filename=lig_file, res_name=res_name)
+    lig = Residue.read_from_file(filename=lig_file, res_name=res_name)
 
     Syst.add_residue(res=lig, cutoff = cutoff, n=n)
 

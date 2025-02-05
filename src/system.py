@@ -79,7 +79,7 @@ class System:
             (float)
                 System box volume.
         """
-        return np.prod(self.__box)
+        return np.prod(self.__box, dtype=float)
     
     #@property
     #def system_atoms(self):
@@ -157,11 +157,11 @@ class System:
         Enumerate Residues and atoms of the system.
         """
 
-        count_res = 1
+        count_res = 0
         count_atm = 1
 
         for res in self.residues:
-            res
+    
             res.res_num = count_res
             res.atom_id = np.arange(count_atm, count_atm + res.n_atoms)
 

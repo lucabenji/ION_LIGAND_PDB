@@ -14,7 +14,7 @@ def main():
     
     while interactive_mode == True:
         command_line = input("> ")
-        execute_command(command_line)
+        execute_command(command_line.split())
 
     reader = InputReader(input_file=input_file)
     reader.read_and_execute()

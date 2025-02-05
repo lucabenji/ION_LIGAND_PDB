@@ -95,7 +95,7 @@ def random_place_molecules(coords, box_dim, cutoff, num, existing_coords=None):
     return placed_coords
 
 # function for pdb outfile
-def write_pdb_line(atom_id: int, atom_name: str, res_name: str, res_number: str, coords: np.ndarray, 
+def write_pdb_line(atom_id: int, atom_name: str, res_name: str, res_number: int, coords: np.ndarray, 
                    alternate_location=' ', chain_id=' ', element=' ') -> str:
     
     format_line = (
