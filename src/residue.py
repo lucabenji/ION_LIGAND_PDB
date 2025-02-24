@@ -1,5 +1,8 @@
 """
-Residue
+residue.py
+==========
+
+
 """
 import os
 
@@ -10,65 +13,120 @@ from src.utils.functions import center_coords
 from src.utils.file_readers import EXTRACT_RESIDUE
 
 class Residue:
+    """
+    
+    """
+
 
     def __init__(self, atom_list: tp.List[str]=[], coords: tp.Union[list, np.ndarray]=[], res_name: str='RES'):
-        
+        """
+        Initialize a Residue object.
+
+        Parameters
+        ----------
+        atom_list : tp.List[str], optional
+            The list of atom name in the residue, by default []
+        coords : tp.Union[list, np.ndarray], optional
+            The array of atomic coordinates of the residue, by default []
+        res_name : str, optional
+            The name of the residue, by default 'RES'
+        """
+
         self.atoms = atom_list
         self.coords = coords if type(coords) == np.ndarray else np.array(coords)
         self.resname = res_name
 
         self._atom_id = np.arange(1, self.n_atoms + 1)
-        self.__res_num = 1    
+        self.__res_num = 1
+
     @property
-    def n_atoms(self):
+    def n_atoms(self)-> int:
+        """
+        The number of atoms in the residue.
+
+        Returns
+        -------
+        int
+            The number of atoms in the residue
+        """
         return len(self.atoms)
 
     @property
-    def atom_id(self):
+    def atom_id(self)-> np.ndarray:
+        """
+        The array of the atom numbers of the residue in the system.
+
+        Returns
+        -------
+        nd.array
+            The array of the atom numbers of the residue in the system
+        """
         return self._atom_id
 
     @atom_id.setter
     def atom_id(self, id_list: np.ndarray):
+        """
+        Set the atom numbers of the residue in the system.
+
+        Parameters
+        ----------
+        id_list : np.ndarray
+            The array of the atom numbers of the residue in the system
+        """
         self._atom_id = id_list
 
     @property
-    def res_num(self):
+    def res_num(self) -> int:
+        """
+        The number of the residue in the system.
+
+        Returns
+        -------
+        int
+            The number of the residue in the system
+        """
         return self.__res_num
     
     @res_num.setter
     def res_num(self, num):
-        self.__res_num = num
-    
-    #@classmethod
-    #def read_from_pdb(cls, filename, res_name):
+        """
+        Set the residue number in the system.
 
-    #    atoms = []
-    #    coordinates = []
-    
-    #    with open(filename, 'r') as file:
-    #        for line in file:
-                
-    #            if line.startswith("ATOM") or line.startswith("HETATM"):
-                
-    #                atom_name = line[12:16].strip()  # Atom name (characters 13-16)
-    #                x = float(line[30:38].strip())   # X coordinate (characters 31-38)
-    #                y = float(line[38:46].strip())   # Y coordinate (characters 39-46)
-    #                z = float(line[46:54].strip())   # Z coordinate (characters 47-54)
-                
-    #                atoms.append(atom_name)
-    #                coordinates.append([x, y, z])
-    
-        
-    #    return cls(atoms, np.array(coordinates), res_name)
-    
+        Parameters
+        ----------
+        num : int
+            The residue number in the system
+        """
+        self.__res_num = num
+ 
     @classmethod
-    def read_from_file(cls, filename, res_name):
+    def read_from_file(cls, filename, res_name: str):
+        """
+        Create a Residue object from a molecular file (.pdb, .mol2, .sdf).
+
+        Parameters
+        ----------
+        filename : str
+            The name of the residue file.
+        res_name : str
+            The residue name.
+
+        Returns
+        -------
+        Residue
+            The residue object with atomic names and coordinates from the molecular file.
+
+        Raises
+        ------
+        ValueError
+            The file format is not supported.
+        """
 
         _, ext = os.path.splitext(filename)  # Residue file extension
         ext = ext.lower()  
 
         if ext in EXTRACT_RESIDUE:
-            atoms, coordinates = EXTRACT_RESIDUE[ext](filename)  # Call the appropriate function
+            atoms, coordinates = EXTRACT_RESIDUE[ext](filename)  # Call the appropriate reader function
         else:
             raise ValueError(f"Unsupported file format '{ext}'")
         
@@ -76,8 +134,19 @@ class Residue:
     
 
     def centering(self):
+        """
+        Center the residue atomic coordinates.
+        """
         
         self.coords = center_coords(self.coords)
 
     def copy(self):
+        """
+        Create a copy of the Residue object.
+
+        Returns
+        -------
+        Residue
+            A copy of the Residue object.
+        """
         return Residue(self.atoms, self.coords, self.resname)

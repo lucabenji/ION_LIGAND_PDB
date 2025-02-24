@@ -11,88 +11,81 @@ class System:
     ------
     Generate a molecuar system where to add Residues.
     
-    Attributes:
+    Attributes
     ----------
-        residues (List[Residues]) 
-            list of added Residues (default is an empty list)
-
-        box (np.ndarray)
-            array of shape (3,) that contain the system box dimensions (default is np.ndarray([40.0, 40.0, 40.0]))
-
-        volume (float) 
-            volume of the system
-
-        n_atoms (int)
-            number of atoms present in the system
-        
-        n_res (int)
-            number of Residues present in the system
+    residues : List[Residues] 
+        The list of added Residues
+    box : np.ndarray
+        A numpy array of shape (3,) that contain the system box dimensions in Ang
+    volume : float
+        The volume of the system in cubic Ang
+    n_atoms: int
+        The total number of atoms in the system  
+    n_res : int
+        The number of Residues present in the system
     """
 
-    def __init__(self, res_list: tp.List[Residue]=[], box=np.array([40.0, 40.0, 40.0])):
+    def __init__(self, res_list: tp.List[Residue]=[]):
+
         """
         Initialize a System istance.
 
-        Args:
-        ----
-            res_list (List[Residues]) 
-                list of Residues (default is an empy list)
-            
-            box (np.ndarray)
-                array of shape (3, ) containing the system box dimensions (default is np.ndarray([40.0, 40.0, 40.0]))
+        Parameters
+        ----------
+        res_list : List[Residues], optional 
+            The list of Residues, by default is []
         """
         
         self.residues = res_list
-        self.__box = box
+        
+        self.__box = np.array([40.0, 40.0, 40.0])
 
     @property
-    def box(self):
+    def box(self) -> np.ndarray:
         """
-        Get system box dimensions.
+        A numpy array of shape (3,) that contain the system box dimensions in Ang.
 
-        Returns:
+        Returns
         -------
-            box (nd.array):
-                array of shape (3, ) containing the system box dimensions (default is np.ndarray([40.0, 40.0, 40.0]))
+        np.ndarray
+            A numpy array of shape (3,) that contain the system box dimensions in Ang
         """
         return self.__box
     
     @box.setter
     def box(self, box_dim: np.ndarray):
         """
-        Set system box dimensions.
+        Set the system box dimensions in Ang.
 
-        Args:
-        ----
-            box_dim (np.ndarray)
-                array of shape (3, ) containing the system box dimensions
+        Parameters
+        ----------
+        box_dim : np.ndarray
+            A numpy array of shape (3, ) with the system box dimensions in Ang
         """
         self.__box = box_dim
 
     @property
     def volume(self) -> float:
         """
-        Get system box volume.
+        The volume of the system in cubic Ang.
 
-        Returns:
+        Returns
         -------
-            (float)
-                System box volume.
+        float
+            The volume of the system in cubic Ang
         """
         return np.prod(self.__box, dtype=float)
-    
-    #@property
-    #def system_atoms(self):
-        
-    #    atoms = []
-    #    for res in self.residues:
-    #        atoms += res.atoms
-    #    return atoms
+
 
     @property
     def system_coords(self) -> tp.List[np.ndarray]:
         """
-        Get system stomic coordinates.
+        List of all the atomic coordinates of the system. Each list element correspond to the atomic coordinates of a specific Residue.
+
+        Returns
+        -------
+        tp.List[np.ndarray]
+            List of all the atomic coordinates of the system
         """
         
         coords = []
@@ -104,7 +97,12 @@ class System:
     @property
     def n_atoms(self) -> int:
         """
-        Get system total number of atoms.
+        The total number of atoms in the system.
+
+        Returns
+        -------
+        int
+            The total number of atoms in the system
         """
 
         n = 0
@@ -116,25 +114,28 @@ class System:
     @property
     def n_res(self) -> int:
         """
-        Get system total number of Residues.
+        The total number of Residues in the system.
+
+        Returns
+        -------
+        int
+            The total number of Residues in the system
         """
         return len(self.residues)
         
 
     def add_residue(self, res: Residue, cutoff=4.0, n=1):
         """
-        Add a specified number of Residues to the system.
+        Add Residue(s) to the system.
 
-        Args:
-        ----
-            res (Residue)
-                Residue to be added
-            
-            cutoff (float)
-                minimum distance in Ang where to place the new residue(s) (default is 4.0)
-
-            n (int)
-                number of Residues to add (default is 1)
+        Parameters
+        ----------
+        res : Residue
+            The Residue to be added.
+        cutoff : float, optional
+            The minimum distance that the new Residue(s) must have from the other atoms of the system, by default 4.0
+        n : int, optional
+            The number of Residue(s) to be added, by default 1
         """
         
         # center the coordinate of the new residue
@@ -154,7 +155,7 @@ class System:
 
     def enumerate_residues(self):
         """
-        Enumerate Residues and atoms of the system.
+        Enumerate Residues and atoms of the system. Enumeration follows the order of System.residues list.
         """
 
         count_res = 0
@@ -187,18 +188,19 @@ class System:
 
     def get_number_of_res(self, resname: str) -> int:
         """
-        Get the number of a specific Residue in the system based on its residue name.
+        Get the number of a specific Residue in the system based on its Residue name.
 
-        Args:
-        ----
-            resname (str)
-                residue name of the Residue of interest
+        Parameters
+        ----------
+        resname : str
+            The Residue name to count.
 
-        Returns:
+        Returns
         -------
-            (int)
-                number of specified Residue in the system
+        int
+            The number of the specified Residue in the system.
         """
+
         count = 0
         for res in self.residues:
             if res.resname == resname:
@@ -208,18 +210,19 @@ class System:
     
     def get_res_concentration(self, resname: str) -> float:
         """
-        Get the molar concentration of a specific Residue in the system based on its residue name.
+        Get the molar concentration of a specific Residue in the system based on its Residue name.
 
-        Args:
-        ----
-            resname (str)
-                residue name of the Residue of interest
+        Parameters
+        ----------
+        resname : str
+            The Residue name of interest.
 
-        Returns:
+        Returns
         -------
-            (float)
-                molar concentration of specified Residue in the system
+        float
+            The molat concentration of the specified Residue in the system.
         """
+
         n_res = self.get_number_of_res(resname)
 
         conc = evaluate_concentration(n_res, self.volume)
@@ -228,12 +231,12 @@ class System:
     
     def remove_residue(self, resname: str):
         """
-        Remove a specific Residue from the system based on its residue name.
+        Remove specific Residue(s) from the system based on the Residue name.
 
-        Args:
-        ----
-            resname (str)
-                residue name of the Residue to be removed
+        Parameters
+        ----------
+        resname : str
+            The Residue name to be removed. 
         """
 
 
