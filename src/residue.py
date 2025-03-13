@@ -36,13 +36,6 @@ class Residue:
         res_name : str, optional
             The name of the residue, by default 'RES'
         """
-
-=======
-    Generate a
-    """
-    def __init__(self, atom_list: tp.List[str]=[], coords: tp.Union[list, np.ndarray]=[], res_name: tp.Optional[str]=None):
-        
->>>>>>> 235342f (Improvend README and function doc)
         self.atoms = atom_list
         self.coords = coords if type(coords) == np.ndarray else np.array(coords)
         self.resname = res_name
