@@ -5,10 +5,10 @@ Available commands
 import numpy as np
 import sys
 
-from src.residue import Residue
-from src.system import System
+from src import Residue
+from src import System
 
-from src.utils.functions import evaluate_n_from_concentration
+from src.utils import evaluate_n_from_concentration
 
 Syst = System()
 
@@ -82,17 +82,17 @@ def set_box(args):
     dim = args.DIM
     box = np.array([dim, dim, dim])
 
-    System.box = box
+    Syst.box = box
     
-    print('\nSystem has now a square box of {:.2f} Ang ({:.2f} nm).'.format(dim, dim/10))
+    print('\nSystem has now a square box of edge {:.2f} Ang ({:.2f} nm).'.format(dim, dim/10))
     print('Volume is {:.2f} Ang^3 ({:.2f} nm^3).'.format(Syst.volume, Syst.volume/1000))
 
 def set_volume(args):
 
     volume = args.VOL
     dim = volume**(1/3)
-    box = box = np.array([dim, dim, dim])
+    box = np.array([dim, dim, dim])
 
-    System.box = box
+    Syst.box = box
     print('\nSystem has now a box volume of {:.2f} Ang^3 ({:.2f} nm^3).'.format(Syst.volume, Syst.volume/1000))
     print('Edge is {:.2f} Ang ({:.2f} nm).'.format(dim, dim/10))

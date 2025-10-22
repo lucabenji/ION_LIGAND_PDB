@@ -2,8 +2,8 @@
 import numpy as np
 import typing as tp
 
-from src.utils.functions import random_place_molecules, write_pdb_line, evaluate_concentration
-from src.residue import Residue
+from src.utils import random_place_molecules, write_pdb_line, evaluate_concentration
+from src import Residue
 
 class System:
     """

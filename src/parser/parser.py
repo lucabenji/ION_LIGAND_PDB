@@ -3,8 +3,10 @@ Parser for the main program and available commands
 """
 
 import argparse
+import sys
 
-from src.commands.commands import *
+from src.commands import *
+from src.utils import CommandError, ParserError
 
 # Main parser
 main_parser = argparse.ArgumentParser(description="Ion Ligand PDB generator by Luca B.", add_help=True)
@@ -18,11 +20,19 @@ input_file = main_args.input_file
 if input_file is not None:
     print('Reading commands from {}!'.format(input_file))
     interactive_mode_status = False
+    exit_on_err = True
 else:
     interactive_mode_status = True
+    exit_on_err = False
 
 # Command Parser
-command_parser = argparse.ArgumentParser(prog="", add_help=False)
+class CommandParser(argparse.ArgumentParser):
+
+    def error(self, message):
+        self._print_message(f"error: {message}\n")
+        raise ParserError("Parser error")
+
+command_parser = CommandParser(prog="", add_help=False)
 command_subparsers = command_parser.add_subparsers(dest="command", required=True) 
 
 # add_ion parser
@@ -60,10 +70,10 @@ rm_ion_parser = command_subparsers.add_parser('remove_ion')
 rm_ion_parser.add_argument('ION', type=str, help='Name of the ion to remove.')
 rm_ion_parser.set_defaults(func=remove_ion)
 
-# remove_ion parser
-rm_ion_parser = command_subparsers.add_parser('remove_ligand')
-rm_ion_parser.add_argument('LIG', type=str, help='Name of the ligand to remove.')
-rm_ion_parser.set_defaults(func=remove_ligand)
+# remove_lig parser
+rm_lig_parser = command_subparsers.add_parser('remove_ligand')
+rm_lig_parser.add_argument('LIG', type=str, help='Name of the ligand to remove.')
+rm_lig_parser.set_defaults(func=remove_ligand)
 
 # set_box parser
 box_parser = command_subparsers.add_parser('set_box')
@@ -75,8 +85,40 @@ volume_parser = command_subparsers.add_parser('set_volume')
 volume_parser.add_argument('VOL', type=float, help='Box volume in Ang^3.')
 volume_parser.set_defaults(func=set_volume)
 
-def execute_command(command):
+list_of_commands = command_subparsers.choices.keys()
+str_cm = ' ,'.join(cm for cm in list_of_commands)
+
+
+def check_command(command):
     """
     """
-    args = command_parser.parse_args(command)
-    args.func(args)
+    cm = command[0]
+
+    # check if command is available
+    if cm not in list_of_commands:
+        print('{} not in available commands.'.format(cm))
+        print(f'Available commands are: {str_cm}')
+        raise CommandError(cm, 'command not found!')
+    elif ('-h' in command) or ('-help' in command):
+        parser = command_subparsers.choices[cm]
+        parser.print_help()
+        raise CommandError(cm, 'help request!')
+
+def execute_command(command, interactive_mode=interactive_mode_status):
+    """
+    """
+    execution = True
+    try:
+        check_command(command)
+    except CommandError:
+        execution = False
+
+    if execution:
+        try:
+            args = command_parser.parse_args(command)
+            args.func(args)
+        except ParserError:
+            if interactive_mode:
+                pass
+            else:
+                sys.exit()

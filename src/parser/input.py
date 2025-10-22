@@ -2,7 +2,7 @@
 Input module for input file parsing and execution.
 """
 
-from src.commands.parser import execute_command
+from src.parser import execute_command
 
 class InputReader:
 

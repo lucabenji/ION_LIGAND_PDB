@@ -9,8 +9,8 @@ import os
 import typing as tp
 import numpy as np
 
-from src.utils.functions import center_coords
-from src.utils.file_readers import EXTRACT_RESIDUE
+from src.utils import center_coords
+from src.utils import EXTRACT_RESIDUE
 
 class Residue:
     """
