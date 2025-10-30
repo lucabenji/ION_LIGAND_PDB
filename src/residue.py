@@ -37,7 +37,7 @@ class Residue:
         self.resname = res_name
 
         self._atom_id = np.arange(1, self.n_atoms + 1)
-        self.__res_num = 1
+        self._res_num = 1
 
     @property
     def n_atoms(self)-> int:
@@ -85,7 +85,7 @@ class Residue:
         int
             The number of the residue in the system
         """
-        return self.__res_num
+        return self._res_num
     
     @res_num.setter
     def res_num(self, num):
@@ -97,7 +97,7 @@ class Residue:
         num : int
             The residue number in the system
         """
-        self.__res_num = num
+        self._res_num = num
  
     @classmethod
     def read_from_file(cls, filename, res_name: str):

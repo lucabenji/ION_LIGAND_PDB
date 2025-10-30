@@ -237,11 +237,7 @@ class System:
         ----------
         resname : str
             The Residue name to be removed. 
-        """
-
-
-        for res in self.residues:
-            if res.resname == resname:
-                self.residues.remove(res)
+        """  
+        self.residues = [res for res in self.residues if res.resname != resname]
 
         self.enumerate_residues()

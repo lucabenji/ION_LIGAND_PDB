@@ -3,7 +3,7 @@
 
 set_box 40 #create a cubic box 40x40x40 Ang 
 
-add_ion NI 4 #add 4 Ni ions
+add_ion NI -n 4 #add 4 Ni ions
 
 add_ligand NME 10 -f examples/nme.pdb #add 10 NME ligand from nme.pdb
 

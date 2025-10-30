@@ -1,5 +1,5 @@
 """
-Available commands
+Available commands on ION_LIGAND_PDB.
 """
 
 import numpy as np
@@ -9,26 +9,39 @@ from src import Residue
 from src import System
 
 from src.utils import evaluate_n_from_concentration
+from src.utils import ConcentrationError
 
+# generate system
 Syst = System()
 
 def add_ion(args):
     """
+    Add ion to System.
     """
 
     ion_coords = np.array([[0.0, 0.0, 0.0]])
     ion_name = args.ION
+    if len(ion_name) > 3:
+        print('Warning! Ion name {} exceeds maximum number of 3 characters. Ion name will be shortened to {}'.format(ion_name, ion_name[:3]))
+        ion_name = ion_name[:3]
+    
+    # crate Residue obj. for ion
     ion = Residue(atom_list=[ion_name], coords=ion_coords, res_name=ion_name)
     
     n = args.n
     if args.conc:
-        n =  evaluate_n_from_concentration(args.conc, Syst.volume) - Syst.get_number_of_res(ion_name)
-        print('\nSelected concentration for ion {}: {:.3f} M.'.format(ion_name, args.conc))
+        n =  evaluate_n_from_concentration(args.conc, Syst.volume) - Syst.get_number_of_res(ion.resname)
+        # error if n <= 0
+        if n <= 0:        
+            raise ConcentrationError(args.conc)
+            
     cutoff = args.cutoff
+
+    # add ions to system
     Syst.add_residue(res=ion, cutoff=cutoff, n=n)
     
     print('\nAdded {} ion(s) with name {} using cutoff {:.2f} Ang'.format(n, ion.resname, cutoff))
-    print('Ion concentration is: {:.3f} M.'.format(Syst.get_res_concentration(ion_name)))
+    print('{} concentration is: {:.3f} M.'.format(ion.resname, Syst.get_res_concentration(ion.resname)))
 
 def add_ligand(args):
     """
@@ -37,13 +50,22 @@ def add_ligand(args):
     lig_file = args.file_name
     n = args.n
     res_name = args.RES
+    if len(res_name) > 3:
+        print('Warning! Ligand residue name {} exceeds maximum number of 3 characters. Ligand residue name will be shortened to {}'.format(res_name, res_name[:3]))
+        res_name = res_name[:3]
     cutoff = args.cutoff
 
     lig = Residue.read_from_file(filename=lig_file, res_name=res_name)
 
+    n = args.n
+    if args.conc:
+        n =  evaluate_n_from_concentration(args.conc, Syst.volume) - Syst.get_number_of_res(lig.resname)
+    cutoff = args.cutoff
+
     Syst.add_residue(res=lig, cutoff = cutoff, n=n)
 
     print('\nAdded {} ligand(s) with residue name {} using cutoff {:.2f} Ang'.format(n, lig.resname, cutoff))
+    print('{} concentration is: {:.3f} M.'.format(lig.resname, Syst.get_res_concentration(lig.resname)))
 
 def generate_pdb(args):
     """
