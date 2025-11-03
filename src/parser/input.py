@@ -5,7 +5,7 @@ Input module for input file parsing and execution of input file commands.
 """
 import os
 
-from src.parser import execute_command
+from src.execution import execute_command
 from src.utils.errors import InputFileError
 
 class InputReader:
@@ -52,4 +52,4 @@ class InputReader:
                 # execute commands
                 if command_line:
                     print('\n>', command_line)                    
-                    execute_command(command_line.split())
+                    execute_command(command_line.split(), interactive_mode=False)

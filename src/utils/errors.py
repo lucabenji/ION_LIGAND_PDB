@@ -7,13 +7,6 @@ class CommandError(Exception):
         self.message = message
         super().__init__(f'{command}: {message}')
 
-class ConcentrationError(Exception):
-
-    def __init__(self, concentration) -> None:
-        self.conentration = concentration
-        self.message = 'Problem with concentration {} M. Try to increase the system volume.'.format(concentration)
-        super().__init__(self.message)
-
 class InputFileError(Exception):
     """
     Custom error raised when input file is not found

@@ -9,7 +9,7 @@ from src import Residue
 from src import System
 
 from src.utils import evaluate_n_from_concentration
-from src.utils import ConcentrationError
+from src.utils import CommandError
 
 # generate system
 Syst = System()
@@ -20,7 +20,11 @@ def add_ion(args):
     """
 
     ion_coords = np.array([[0.0, 0.0, 0.0]])
+    
     ion_name = args.ION
+    cutoff = args.cutoff
+
+    # ion name too long
     if len(ion_name) > 3:
         print('Warning! Ion name {} exceeds maximum number of 3 characters. Ion name will be shortened to {}'.format(ion_name, ion_name[:3]))
         ion_name = ion_name[:3]
@@ -28,14 +32,16 @@ def add_ion(args):
     # crate Residue obj. for ion
     ion = Residue(atom_list=[ion_name], coords=ion_coords, res_name=ion_name)
     
+    # number of ions to add
     n = args.n
     if args.conc:
         n =  evaluate_n_from_concentration(args.conc, Syst.volume) - Syst.get_number_of_res(ion.resname)
         # error if n <= 0
-        if n <= 0:        
-            raise ConcentrationError(args.conc)
+        if n <= 0:
+            msg = 'The user asked for concentration {:.3f}, but {} concentration is {:.3f}. Try to increase the system volume.'.format(args.conc, ion.resname, Syst.get_res_concentration(ion.resname))          
+            raise CommandError(command='add_ion', message=msg)
             
-    cutoff = args.cutoff
+    
 
     # add ions to system
     Syst.add_residue(res=ion, cutoff=cutoff, n=n)
@@ -45,21 +51,30 @@ def add_ion(args):
 
 def add_ligand(args):
     """
+    Add ligand to System.
     """
 
     lig_file = args.file_name
-    n = args.n
     res_name = args.RES
+
+    # ligand resname too long
     if len(res_name) > 3:
         print('Warning! Ligand residue name {} exceeds maximum number of 3 characters. Ligand residue name will be shortened to {}'.format(res_name, res_name[:3]))
         res_name = res_name[:3]
     cutoff = args.cutoff
 
+    # create Residue obj. for ligand
     lig = Residue.read_from_file(filename=lig_file, res_name=res_name)
 
     n = args.n
     if args.conc:
         n =  evaluate_n_from_concentration(args.conc, Syst.volume) - Syst.get_number_of_res(lig.resname)
+        if args.conc:
+            n =  evaluate_n_from_concentration(args.conc, Syst.volume) - Syst.get_number_of_res(lig.resname)
+        # error if n <= 0
+        if n <= 0:
+            msg = 'The user asked for concentration {:.3f} M, but {} concentration is {:.3f} M. Try to increase the system volume.'.format(args.conc, lig.resname, Syst.get_res_concentration(lig.resname))          
+            raise CommandError(command='add_ion', message=msg)
     cutoff = args.cutoff
 
     Syst.add_residue(res=lig, cutoff = cutoff, n=n)

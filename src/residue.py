@@ -118,9 +118,15 @@ class Residue:
 
         Raises
         ------
+        FileNotFoundError
+            The file is not found.
         ValueError
             The file format is not supported.
         """
+
+        if os.path.exists(filename)== False:
+            raise FileNotFoundError("Ligand file '{}' not found".format(filename))
+
 
         _, ext = os.path.splitext(filename)  # Residue file extension
         ext = ext.lower()  
@@ -128,7 +134,7 @@ class Residue:
         if ext in EXTRACT_RESIDUE:
             atoms, coordinates = EXTRACT_RESIDUE[ext](filename)  # Call the appropriate reader function
         else:
-            raise ValueError(f"Unsupported file format '{ext}'")
+            raise ValueError(f"Unsupported file format '{ext}' for ligands.")
         
         return cls(atoms, coordinates, res_name)
     
