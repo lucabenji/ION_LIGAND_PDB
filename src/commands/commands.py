@@ -9,7 +9,7 @@ from src import Residue
 from src import System
 
 from src.utils import evaluate_n_from_concentration
-from src.utils import CommandError
+from src.utils import CommandError, LigandFileError, PlacingError
 
 # generate system
 Syst = System()
@@ -24,16 +24,21 @@ def add_ion(args):
     ion_name = args.ION
     cutoff = args.cutoff
 
+    # error if cutoff is more then system dimensions
+    if cutoff > Syst.box:
+        msg = 'Required cutoff is {} but system dimensions is {}x{}x{} Ang.'.format(cutoff, Syst.box, Syst.box, Syst.box)
+        raise CommandError(command='add_ion', message=msg)
+
     # ion name too long
     if len(ion_name) > 3:
-        print('Warning! Ion name {} exceeds maximum number of 3 characters. Ion name will be shortened to {}'.format(ion_name, ion_name[:3]))
+        print('Warning! Ion name {} exceeds maximum number of 3 characters. Ion name will be shortened to {}.'.format(ion_name, ion_name[:3]))
         ion_name = ion_name[:3]
     
     # crate Residue obj. for ion
     ion = Residue(atom_list=[ion_name], coords=ion_coords, res_name=ion_name)
     
     # number of ions to add
-    n = args.n
+    n = args.N
     if args.conc:
         n =  evaluate_n_from_concentration(args.conc, Syst.volume) - Syst.get_number_of_res(ion.resname)
         # error if n <= 0
@@ -44,7 +49,12 @@ def add_ion(args):
     
 
     # add ions to system
-    Syst.add_residue(res=ion, cutoff=cutoff, n=n)
+    try:
+        Syst.add_residue(res=ion, cutoff=cutoff, n=n)
+    # error when placing molecules
+    except PlacingError as e:
+        msg = '{}\n Try to reduce the cutoff or increase system volume.'.format(e.message)
+        raise CommandError(command='add_ion', message=msg)
     
     print('\nAdded {} ion(s) with name {} using cutoff {:.2f} Ang'.format(n, ion.resname, cutoff))
     print('{} concentration is: {:.3f} M.'.format(ion.resname, Syst.get_res_concentration(ion.resname)))
@@ -59,14 +69,22 @@ def add_ligand(args):
 
     # ligand resname too long
     if len(res_name) > 3:
-        print('Warning! Ligand residue name {} exceeds maximum number of 3 characters. Ligand residue name will be shortened to {}'.format(res_name, res_name[:3]))
+        print('Warning! Ligand residue name {} exceeds maximum number of 3 characters. Ligand residue name will be shortened to {}.'.format(res_name, res_name[:3]))
         res_name = res_name[:3]
+    
     cutoff = args.cutoff
-
+    # error if cutoff is more then system dimensions
+    if cutoff > Syst.box:
+        msg = 'Required cutoff is {} but system dimensions is {}x{}x{} Ang.'.format(cutoff, Syst.box, Syst.box, Syst.box)
+        raise CommandError(command='add_ligand', message=msg)
+    
     # create Residue obj. for ligand
-    lig = Residue.read_from_file(filename=lig_file, res_name=res_name)
+    try:
+        lig = Residue.read_from_file(filename=lig_file, res_name=res_name)
+    except LigandFileError as e:
+        raise CommandError(command= 'add_ligand', message=e.message)
 
-    n = args.n
+    n = args.N
     if args.conc:
         n =  evaluate_n_from_concentration(args.conc, Syst.volume) - Syst.get_number_of_res(lig.resname)
         if args.conc:
@@ -75,9 +93,14 @@ def add_ligand(args):
         if n <= 0:
             msg = 'The user asked for concentration {:.3f} M, but {} concentration is {:.3f} M. Try to increase the system volume.'.format(args.conc, lig.resname, Syst.get_res_concentration(lig.resname))          
             raise CommandError(command='add_ion', message=msg)
-    cutoff = args.cutoff
 
-    Syst.add_residue(res=lig, cutoff = cutoff, n=n)
+    # add ligand to system
+    try:
+        Syst.add_residue(res=lig, cutoff = cutoff, n=n)
+    # error when placing ligands
+    except PlacingError as e:
+        msg = '{}\n Try to reduce the cutoff or increase system volume.'.format(e.message)
+        raise CommandError(command='add_ligand', message=msg)
 
     print('\nAdded {} ligand(s) with residue name {} using cutoff {:.2f} Ang'.format(n, lig.resname, cutoff))
     print('{} concentration is: {:.3f} M.'.format(lig.resname, Syst.get_res_concentration(lig.resname)))

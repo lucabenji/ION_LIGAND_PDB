@@ -4,6 +4,7 @@ import typing as tp
 
 from src.utils import random_place_molecules, write_pdb_line, evaluate_concentration
 from src import Residue
+from src.utils import PlacingError
 
 class System:
     """
@@ -142,7 +143,11 @@ class System:
         res.centering()
 
         # generate new residue coordinates
-        new_coords = random_place_molecules(res.coords, self.box, cutoff, n, self.system_coords)
+        try:
+            new_coords = random_place_molecules(res.coords, self.box, cutoff, n, self.system_coords)
+        except PlacingError as e:
+            msg = 'Error when placing {} residue(s) {} with minimum distance {:.2f} Ang. {}'.format(n, res.resname, cutoff, e.message)
+            raise PlacingError(msg)
 
         # add new residues
         for i in range(self.n_res, self.n_res + n):

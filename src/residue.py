@@ -12,6 +12,8 @@ import numpy as np
 from src.utils import center_coords
 from src.utils import EXTRACT_RESIDUE
 
+from src.utils import LigandFileError
+
 class Residue:
     """
     
@@ -125,7 +127,8 @@ class Residue:
         """
 
         if os.path.exists(filename)== False:
-            raise FileNotFoundError("Ligand file '{}' not found".format(filename))
+            msg = "Ligand file '{}' not found.".format(filename)
+            raise LigandFileError(filename, msg)
 
 
         _, ext = os.path.splitext(filename)  # Residue file extension
@@ -134,7 +137,8 @@ class Residue:
         if ext in EXTRACT_RESIDUE:
             atoms, coordinates = EXTRACT_RESIDUE[ext](filename)  # Call the appropriate reader function
         else:
-            raise ValueError(f"Unsupported file format '{ext}' for ligands.")
+            msg = f"Unsupported file format '{ext}' for ligand files."
+            raise LigandFileError(filename, msg)
         
         return cls(atoms, coordinates, res_name)
     

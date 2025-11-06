@@ -34,4 +34,4 @@ def start(interactive_mode: bool):
     print("It's time to create your metal ion-ligand PDB file, lets go!")
 
     if interactive_mode == True:
-        print("Type 'help' to see available commands. Type 'quit' to exit.")
+        print("Type 'quit' to exit.")

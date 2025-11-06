@@ -41,7 +41,7 @@ class InputReader:
         """
         Read and execute commands from the input file.
         """
-
+        print('Reading commands from file {}!'.format(self.input_file))
         with open(self.input_file) as f:
 
             for line in f:

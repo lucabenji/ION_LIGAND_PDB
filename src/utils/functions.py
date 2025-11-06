@@ -2,6 +2,8 @@
 
 import numpy as np
 
+from src.utils.errors import PlacingError
+
 # constant
 Na = 6.022e23 # Avogadro number (mol^-1)
 
@@ -58,7 +60,15 @@ def translate_coords(coords, vec):
 
     return translated_coords
 
-def random_place_molecules(coords, box_dim, cutoff, num, existing_coords=None):
+def is_valid_placement(new_coords, placed_coords, cutoff):
+        
+    for placed in placed_coords:
+        distances = np.linalg.norm(new_coords[:, None, :] - placed[None, :, :], axis=-1)
+        if np.any(distances < cutoff):
+            return False
+    return True
+
+def random_place_molecules(molecule_coords, box_dim, cutoff, num, existing_coords=None):
     
     if existing_coords is None:
         existing_coords = []
@@ -66,31 +76,28 @@ def random_place_molecules(coords, box_dim, cutoff, num, existing_coords=None):
     placed_coords = existing_coords.copy()  # Start with existing molecules
     box_x, box_y, box_z = box_dim
 
-    def is_valid_placement(new_coords, placed_coords, cutoff):
-        
-        for placed in placed_coords:
-            #print(placed)
-            #print(new_coords)
-            distances = np.linalg.norm(new_coords[:, None, :] - placed[None, :, :], axis=-1)
-            if np.any(distances < cutoff):
-                return False
-        return True
-
+    iteration = 0
     while len(placed_coords) < num + len(existing_coords):
+
+        if iteration > 1e4:
+            msg = 'Placing molecules have exceeded 10,000 iterations.'
+            raise PlacingError(msg)
         
-        # Generate random rotation using Euler angles
+        # Generate random rotation
         theta, phi, psi = np.random.uniform(0, 2 * np.pi, size=3)
 
         # Apply rotation to the molecule coordinates
-        rotated_coords = rotate_coords(coords, phi, psi, theta)
+        rotated_coords = rotate_coords(molecule_coords, phi, psi, theta)
 
-        # Generate random position in the box
+        # Generate random positions inside the box
         random_position = np.random.uniform(0, [box_x, box_y, box_z])
         translated_coords = translate_coords(rotated_coords, random_position)
 
         # Validate placement
         if is_valid_placement(translated_coords, placed_coords, cutoff):
             placed_coords.append(translated_coords)
+        
+        iteration += 1
 
     return placed_coords
 

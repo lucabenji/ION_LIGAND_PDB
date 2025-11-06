@@ -33,7 +33,7 @@ def main():
         reader = InputReader(input_file=input_file)
         reader.read_and_execute()
     except InputFileError as e:
-        print(e.message)
+        print('Error! {}'.format(e.message))
         sys.exit()
 
 if __name__ == "__main__":
