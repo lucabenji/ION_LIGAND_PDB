@@ -1,8 +1,12 @@
 """
+<<<<<<< HEAD
 residue.py
 ==========
 
 
+=======
+Residue module.
+>>>>>>> 235342f (Improvend README and function doc)
 """
 import os
 
@@ -16,6 +20,7 @@ from src.utils import LigandFileError
 
 class Residue:
     """
+<<<<<<< HEAD
     
     """
 
@@ -33,7 +38,6 @@ class Residue:
         res_name : str, optional
             The name of the residue, by default 'RES'
         """
-
         self.atoms = atom_list
         self.coords = coords if type(coords) == np.ndarray else np.array(coords)
         self.resname = res_name

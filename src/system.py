@@ -1,4 +1,6 @@
-# class System
+"""
+System module
+"""
 import numpy as np
 import typing as tp
 
