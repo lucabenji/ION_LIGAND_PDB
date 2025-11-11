@@ -56,7 +56,7 @@ ion_parser.add_argument('ION', type=str, help='Name of the ion.')
 ion_parser.add_argument('-cutoff', dest='cutoff', type=float, default=4.0, help='Minimum distance between ions and other molecules in Ang (default=4.0)')
 # only one betwen number or concentration can be choosen
 ion_number = ion_parser.add_mutually_exclusive_group()
-ion_number.add_argument('-n', dest='N', type=int, nargs="?", default=1, help='Number of ions (default=1)')
+ion_number.add_argument('-n', dest='N', type=int, default=1, help='Number of ions (default=1)')
 ion_number.add_argument('-conc', dest='conc', type=float, help='Molar ion concentration.')
 ion_parser.set_defaults(func=add_ion)
 
@@ -67,7 +67,7 @@ lig_parser.add_argument('-f', dest='file_name', type=str, required=True, help='L
 lig_parser.add_argument('-cutoff', dest='cutoff', type=float, default=4.0, help='Minimum distance for placing ligands and other molecules in Ang (default=4.0)')
 # only one between number or concentration can be choosen
 lig_number = lig_parser.add_mutually_exclusive_group()
-lig_number.add_argument('-n', dest='N', type=int, nargs="?", default=1, help='Number of ligands (default=1)')
+lig_number.add_argument('-n', dest='N', type=int, default=1, help='Number of ligands (default=1)')
 lig_number.add_argument('-conc', dest='conc', type=float, help='Molar ligand concentration.')
 lig_parser.set_defaults(func=add_ligand)
 
