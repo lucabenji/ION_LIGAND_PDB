@@ -1,12 +1,7 @@
 """
-<<<<<<< HEAD
-residue.py
-==========
-
-
-=======
 Residue module.
->>>>>>> 235342f (Improvend README and function doc)
+
+It contain the Residue class, used to generate ions or ligands
 """
 import os
 
@@ -20,7 +15,19 @@ from src.utils import LigandFileError
 
 class Residue:
     """
-<<<<<<< HEAD
+    Residue
+    -------
+
+    Generate a residue istance for an ion or a ligand.
+
+    Attributes
+    ----------
+    atom_list : tp.List[str], optional
+        The list of atom name in the residue, by default []
+    coords : tp.Union[list, np.ndarray], optional
+        The array of atomic coordinates of the residue, by default []
+    res_name : str, optional
+        The name of the residue, by default 'RES'
     
     """
 
@@ -41,9 +48,6 @@ class Residue:
         self.atoms = atom_list
         self.coords = coords if type(coords) == np.ndarray else np.array(coords)
         self.resname = res_name
-
-        self._atom_id = np.arange(1, self.n_atoms + 1)
-        self._res_num = 1
 
     @property
     def n_atoms(self)-> int:
@@ -67,7 +71,7 @@ class Residue:
         nd.array
             The array of the atom numbers of the residue in the system
         """
-        return self._atom_id
+        return self.__atom_id
 
     @atom_id.setter
     def atom_id(self, id_list: np.ndarray):
@@ -79,7 +83,7 @@ class Residue:
         id_list : np.ndarray
             The array of the atom numbers of the residue in the system
         """
-        self._atom_id = id_list
+        self.__atom_id = id_list
 
     @property
     def res_num(self) -> int:
@@ -91,7 +95,7 @@ class Residue:
         int
             The number of the residue in the system
         """
-        return self._res_num
+        return self.__res_num
     
     @res_num.setter
     def res_num(self, num):
@@ -103,7 +107,7 @@ class Residue:
         num : int
             The residue number in the system
         """
-        self._res_num = num
+        self.__res_num = num
  
     @classmethod
     def read_from_file(cls, filename, res_name: str):
@@ -124,22 +128,26 @@ class Residue:
 
         Raises
         ------
-        FileNotFoundError
+        LigandFileError
             The file is not found.
-        ValueError
+        LigandFileError
             The file format is not supported.
         """
 
+        # File not found
         if os.path.exists(filename)== False:
             msg = "Ligand file '{}' not found.".format(filename)
             raise LigandFileError(filename, msg)
 
 
-        _, ext = os.path.splitext(filename)  # Residue file extension
+         # Residue file extension
+        _, ext = os.path.splitext(filename) 
         ext = ext.lower()  
 
+        # Call the appropriate reader function
         if ext in EXTRACT_RESIDUE:
-            atoms, coordinates = EXTRACT_RESIDUE[ext](filename)  # Call the appropriate reader function
+            atoms, coordinates = EXTRACT_RESIDUE[ext](filename) 
+        # unsupported file format
         else:
             msg = f"Unsupported file format '{ext}' for ligand files."
             raise LigandFileError(filename, msg)
@@ -153,10 +161,10 @@ class Residue:
         """
         
         self.coords = center_coords(self.coords)
-
+    
     def copy(self):
         """
-        Create a copy of the Residue object.
+        Create a copy of a Residue object.
 
         Returns
         -------

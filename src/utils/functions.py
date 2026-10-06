@@ -1,6 +1,9 @@
-"""Useful functions"""
+"""
+Module containing useful functions for placing residues and writing pdb files.
+"""
 
 import numpy as np
+from typing import Optional, List
 
 from src.utils.errors import PlacingError
 
@@ -8,7 +11,22 @@ from src.utils.errors import PlacingError
 Na = 6.022e23 # Avogadro number (mol^-1)
 
 # concentration from n res
-def evaluate_concentration(n: int, volume: float):
+def evaluate_concentration(n: int, volume: float) -> float:
+    """
+    Evaluate the molar concentration in a volume from the number of residues.
+
+    Parameters
+    ----------
+    n : int
+        Number of residues.
+    volume : float
+        System volume (in Ang^3).
+
+    Returns
+    -------
+    float
+        The residue concentration.
+    """
     
     conc = n/((volume*1e-27)*Na)
 
@@ -16,13 +34,41 @@ def evaluate_concentration(n: int, volume: float):
 
 # n res from concentration
 def evaluate_n_from_concentration(conc: float, volume: float) -> int:
+    """
+    Evaluate the number of residues from their concentration in a given volume.
+
+    Parameters
+    ----------
+    conc : float
+        Residue concentration.
+    volume : float
+        System volume (in Ang^3).
+
+    Returns
+    -------
+    int
+        Number of residues.
+    """
 
     n = conc*((volume*1e-27)*Na)
 
     return round(n)
 
 # function for residue and system coordinates
-def center_coords(coords):
+def center_coords(coords: np.ndarray) ->np.ndarray:
+    """
+    Center a 3D set of coordinates.
+
+    Parameters
+    ----------
+    coords : np.ndarray
+        3D coordinates.
+
+    Returns
+    -------
+    np.ndarray
+        Centered coordinates.
+    """
 
     center = np.mean(coords, axis=0)
 
@@ -30,7 +76,26 @@ def center_coords(coords):
 
     return centered_coords
 
-def rotate_coords(coords, phi, psi, theta):
+def rotate_coords(coords:np.ndarray, phi: float, psi: float, theta: float)-> np.ndarray:
+    """
+    Rotate a 3D set of coordinates
+
+    Parameters
+    ----------
+    coords : np.ndarray
+        3D coordinates.
+    phi : float
+        Rotation angle around X (in rad).
+    psi : float
+        Rotation angle around Y (in rad).
+    theta : float
+        Rotation angle around Z (in rad).
+
+    Returns
+    -------
+    np.ndarray
+        Rotated coordinates.
+    """
 
     rotation_matrix = np.array([
             [
@@ -54,21 +119,54 @@ def rotate_coords(coords, phi, psi, theta):
 
     return rotated_coords
 
-def translate_coords(coords, vec):
+def translate_coords(coords: np.ndarray, vec: np.ndarray) -> np.ndarray:
+    """
+    Translate a set of 3D coordinates.
 
+    Parameters
+    ----------
+    coords : np.ndarray
+        3D coordinates.
+    vec : np.ndarray
+        Translation vector.
+
+    Returns
+    -------
+    np.ndarray
+        Translated coordinates.
+    """
     translated_coords = coords + vec
 
     return translated_coords
 
-def is_valid_placement(new_coords, placed_coords, cutoff):
+def is_valid_placement(new_coords: np.ndarray, placed_coords: List[np.ndarray], cutoff: float) -> bool:
+    """
+    Check if a new set of 3D coordinates respects the cutoff distance with the present ones.
+
+    Parameters
+    ----------
+    new_coords : np.ndarray
+        New set of 3D coordinates.
+    placed_coords : List
+        List of present coordinates. 
+    cutoff : float
+        Cutoff distance.
+
+    Returns
+    -------
+    bool
+        True if the new coordinates respect the cutoff distance.
+    """
         
     for placed in placed_coords:
         distances = np.linalg.norm(new_coords[:, None, :] - placed[None, :, :], axis=-1)
+
         if np.any(distances < cutoff):
             return False
+        
     return True
 
-def random_place_molecules(molecule_coords, box_dim, cutoff, num, existing_coords=None):
+def random_place_molecules(molecule_coords: np.ndarray, box_dim: np.ndarray, cutoff: float, num: int, existing_coords:Optional[List] = None):
     
     if existing_coords is None:
         existing_coords = []

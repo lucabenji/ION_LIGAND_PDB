@@ -1,12 +1,15 @@
 """
 System module
+
+It contains the class System, where ato place the desired residues (ions and/or ligand).
+From a System object, it is possible to generate a pdb file with all the placed ions and ligands.
 """
 import numpy as np
 import typing as tp
 
 from src.utils import random_place_molecules, write_pdb_line, evaluate_concentration
 from src import Residue
-from src.utils import PlacingError
+from src.utils import PlacingError, BoxError
 
 class System:
     """
@@ -41,6 +44,7 @@ class System:
         
         self.residues = res_list
         
+        # default box 40.0x40.0x40.0 Ang
         self.__box = np.array([40.0, 40.0, 40.0])
 
     @property
@@ -64,8 +68,28 @@ class System:
         ----------
         box_dim : np.ndarray
             A numpy array of shape (3, ) with the system box dimensions in Ang
+        
+        Raises
+        ------
+        BoxError
+            The box dimension is not a (3, ) array.
+        BoxError
+            The system is not empty and the selected box dimensions and or volume are too small.
         """
-        self.__box = box_dim
+
+        if box_dim.shape[0] != 3:
+            msg = 'Box dimensions must be a (3, ) array.'
+            raise BoxError(message=msg)
+        
+        else:
+            edge = box_dim[0]
+
+            if self.n_res > 0 and np.any(edge < np.vstack(self.system_coords)):
+                msg =  'System is not empty and the requested system dimension ({:.1f} Ang) is too small. Try to increase box dimension.'.format(edge)
+                raise BoxError(message=msg)
+                        
+            else:
+                self.__box = box_dim
 
     @property
     def volume(self) -> float:
@@ -90,7 +114,7 @@ class System:
         tp.List[np.ndarray]
             List of all the atomic coordinates of the system
         """
-        
+
         coords = []
         for res in self.residues:
             coords.append(res.coords)
@@ -125,8 +149,28 @@ class System:
             The total number of Residues in the system
         """
         return len(self.residues)
-        
+    
+    def residue_exists(self, resname: str) -> bool:
+        """
+        Returne True if a residue with resname is present in the system.
 
+        Parameters
+        ----------
+        resname : str
+           Residue name.
+
+        Returns
+        -------
+        bool
+           True if residue is present.
+        """
+
+        if self._get_number_of_res(resname) >= 1:
+            return True
+        else:
+            return False
+
+        
     def add_residue(self, res: Residue, cutoff=4.0, n=1):
         """
         Add Residue(s) to the system.
@@ -148,7 +192,7 @@ class System:
         try:
             new_coords = random_place_molecules(res.coords, self.box, cutoff, n, self.system_coords)
         except PlacingError as e:
-            msg = 'Error when placing {} residue(s) {} with minimum distance {:.2f} Ang. {}'.format(n, res.resname, cutoff, e.message)
+            msg = 'Error when placing {} residue(s) {} with cutoff distance {:.2f} Ang. {}'.format(n, res.resname, cutoff, e.message)
             raise PlacingError(msg)
 
         # add new residues
@@ -158,11 +202,11 @@ class System:
             self.residues.append(new_res)
         
         # enumerate new residues and atoms
-        self.enumerate_residues()
+        self._enumerate_residues()
 
-    def enumerate_residues(self):
+    def _enumerate_residues(self):
         """
-        Enumerate Residues and atoms of the system. Enumeration follows the order of System.residues list.
+        Enumerate Residues and atoms of the system. Enumeration follows the order of the Residue list.
         """
 
         count_res = 0
@@ -193,7 +237,7 @@ class System:
             print('TER')
         print('END')
 
-    def get_number_of_res(self, resname: str) -> int:
+    def _get_number_of_res(self, resname: str) -> int:
         """
         Get the number of a specific Residue in the system based on its Residue name.
 
@@ -215,7 +259,7 @@ class System:
         
         return count
     
-    def get_res_concentration(self, resname: str) -> float:
+    def _get_res_concentration(self, resname: str) -> float:
         """
         Get the molar concentration of a specific Residue in the system based on its Residue name.
 
@@ -227,10 +271,10 @@ class System:
         Returns
         -------
         float
-            The molat concentration of the specified Residue in the system.
+            The molar concentration of the specified Residue in the system.
         """
 
-        n_res = self.get_number_of_res(resname)
+        n_res = self._get_number_of_res(resname)
 
         conc = evaluate_concentration(n_res, self.volume)
 
@@ -247,4 +291,4 @@ class System:
         """  
         self.residues = [res for res in self.residues if res.resname != resname]
 
-        self.enumerate_residues()
+        self._enumerate_residues()

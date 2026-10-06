@@ -1,15 +1,13 @@
 """
 Parser module for the main program and available commands.
 
-The main parser activates the interactive mode if no input files with command is provided.
+The main parser activates the interactive mode if no command input file is provided.
 """
 
 import argparse
-import sys
-from typing import List
 
 from src.commands import *
-from src.utils import CommandError, HelpRequest, ParserError
+from src.utils import  ParserError
 
 # Main parser
 main_parser = argparse.ArgumentParser(description="Ion Ligand PDB generator by Luca B.", add_help=True)
@@ -27,6 +25,9 @@ else:
 
 # Command Parser
 class CommandParser(argparse.ArgumentParser):
+    """
+    ArgumentParser class with custom error method.
+    """
 
     # custom error method for interactive vs reading mode
     def error(self, message: str):
@@ -62,7 +63,7 @@ ion_parser.set_defaults(func=add_ion)
 
 # add_ligand parser
 lig_parser = command_subparsers.add_parser('add_ligand')
-lig_parser.add_argument('RES', type=str, nargs="?", help='Ligand residue name (max. 3 characters)')
+lig_parser.add_argument('LIG', type=str, nargs="?", help='Ligand residue name (max. 3 characters)', default='LIG')
 lig_parser.add_argument('-f', dest='file_name', type=str, required=True, help='Ligand file name')
 lig_parser.add_argument('-cutoff', dest='cutoff', type=float, default=4.0, help='Minimum distance for placing ligands and other molecules in Ang (default=4.0)')
 # only one between number or concentration can be choosen
@@ -80,15 +81,10 @@ pdb_parser.set_defaults(func=generate_pdb)
 quit_parser = command_subparsers.add_parser('quit')
 quit_parser.set_defaults(func=quit)
 
-# remove_ion parser
-rm_ion_parser = command_subparsers.add_parser('remove_ion')
-rm_ion_parser.add_argument('ION', type=str, help='Name of the ion to remove.')
-rm_ion_parser.set_defaults(func=remove_ion)
-
-# remove_lig parser
-rm_lig_parser = command_subparsers.add_parser('remove_ligand')
-rm_lig_parser.add_argument('LIG', type=str, help='Name of the ligand to remove.')
-rm_lig_parser.set_defaults(func=remove_ligand)
+# remove parser
+rm_parser = command_subparsers.add_parser('remove')
+rm_parser.add_argument('RES', type=str, help='Name of the residue to remove.')
+rm_parser.set_defaults(func=remove)
 
 # set_box parser
 box_parser = command_subparsers.add_parser('set_box')

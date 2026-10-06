@@ -1,0 +1,5 @@
+#add_ion NI -n 50
+
+add_ion CA -n 40
+
+add_ion CA -conc 3 -cutoff 10

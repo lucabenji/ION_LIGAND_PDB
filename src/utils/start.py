@@ -1,5 +1,5 @@
 """
-Function for fancy print at the start of the program.
+Function for fancy printing at the start of the program.
 """
 
 line1 = ' _____            _     _                       ___________________  '
