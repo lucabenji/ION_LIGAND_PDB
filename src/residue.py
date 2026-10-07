@@ -1,7 +1,7 @@
 """
 Residue module.
 
-It contain the Residue class, used to generate ions or ligands
+It contain the Residue class, used to generate ions or ligands.
 """
 import os
 

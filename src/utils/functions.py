@@ -166,12 +166,39 @@ def is_valid_placement(new_coords: np.ndarray, placed_coords: List[np.ndarray], 
         
     return True
 
-def random_place_molecules(molecule_coords: np.ndarray, box_dim: np.ndarray, cutoff: float, num: int, existing_coords:Optional[List] = None):
+def random_place_molecules(molecule_coords: np.ndarray, box_dim: np.ndarray, cutoff: float, num: int, existing_coords:Optional[List] = None) -> List:
+    """
+    Place randomly sets a set of coordinates inside a box. A minimum distance (cutoff) between new coordinates and alredy present ones must be specified.
+
+    Parameters
+    ----------
+    molecule_coords : np.ndarray
+        3D set of coordinates to locate in the system.
+    box_dim : np.ndarray
+        (3, ) array of the system dimension box.
+    cutoff : float
+        Minimum required distance between new molecules and the existing ones. 
+    num : int
+        Number of new set of coordinates that have to be placed.
+    existing_coords : Optional[List], optional
+        Coordinates alredy present in the system, by default None.
+
+    Returns
+    -------
+    List
+        Coordinates present in the system (new + old ones).
+
+    Raises
+    ------
+    PlacingError
+        Number of iteration needed to allocate all new coordinates has exceed 10000.
+    """
     
     if existing_coords is None:
         existing_coords = []
 
-    placed_coords = existing_coords.copy()  # Start with existing molecules
+    # Start with existing molecules
+    placed_coords = existing_coords.copy()  
     box_x, box_y, box_z = box_dim
 
     iteration = 0
@@ -181,13 +208,13 @@ def random_place_molecules(molecule_coords: np.ndarray, box_dim: np.ndarray, cut
             msg = 'Placing molecules have exceeded 10,000 iterations.'
             raise PlacingError(msg)
         
-        # Generate random rotation
+        # Random rotation angle
         theta, phi, psi = np.random.uniform(0, 2 * np.pi, size=3)
 
-        # Apply rotation to the molecule coordinates
+        # Random rotation to new coordinates
         rotated_coords = rotate_coords(molecule_coords, phi, psi, theta)
 
-        # Generate random positions inside the box
+        # Random positions inside the box
         random_position = np.random.uniform(0, [box_x, box_y, box_z])
         translated_coords = translate_coords(rotated_coords, random_position)
 
@@ -195,13 +222,42 @@ def random_place_molecules(molecule_coords: np.ndarray, box_dim: np.ndarray, cut
         if is_valid_placement(translated_coords, placed_coords, cutoff):
             placed_coords.append(translated_coords)
         
+        # Iteration count
         iteration += 1
 
     return placed_coords
 
-# function for pdb outfile
+# Function for pdb file
+
 def write_pdb_line(atom_id: int, atom_name: str, res_name: str, res_number: int, coords: np.ndarray, 
                    alternate_location=' ', chain_id=' ', element=' ') -> str:
+    """
+    Generate a correctly formatted PDB file line from atom information.
+
+    Parameters
+    ----------
+    atom_id : int
+        Index of the atom in the system.
+    atom_name : str
+        Name of the atom.
+    res_name : str
+        Residue name.
+    res_number : int
+        Index of the residue in the system.
+    coords : np.ndarray
+        Coordinates of the atom in a (3, ) array.
+    alternate_location : str, optional
+       Alternative locations of the atom, by default ' '
+    chain_id : str, optional
+        Index of the chain where the atom belongs, by default ' '
+    element : str, optional
+        Element of the atom from the periodic table, by default ' '
+
+    Returns
+    -------
+    str
+        Formatted PDB file line.
+    """
     
     format_line = (
         "ATOM  {atom_id:5d} {atom_name:>3s}{alternate_location} {residue_name:<3s} {chain_id}{residue_number:4d}    "

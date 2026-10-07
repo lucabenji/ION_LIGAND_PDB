@@ -1,5 +1,7 @@
 """
-Execute commands from ION_LIGAND_PDB program.
+Execution modules
+
+It contains functions that check, parse, and execute commands for ION_LIGAND_PDB program.
 """
 from typing import List
 import sys

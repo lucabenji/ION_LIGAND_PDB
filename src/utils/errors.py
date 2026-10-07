@@ -1,3 +1,7 @@
+"""
+Module containing custom errors.
+"""
+
 class BoxError(Exception):
     """
     Custom error raised when something is wrong with system box or volume setting.

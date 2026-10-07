@@ -1,5 +1,5 @@
 """
-Available commands on ION_LIGAND_PDB.
+Module containing all the available commands of ION_LIGAND_PDB program.
 """
 
 import numpy as np
@@ -11,8 +11,9 @@ from src import System
 from src.utils import evaluate_n_from_concentration
 from src.utils import ExecutionError, LigandFileError, PlacingError
 from src.utils.errors import BoxError
+from src.utils import end
 
-# generate system
+# System object where all the commands are acting.
 Syst = System()
 
 
@@ -124,7 +125,7 @@ def quit(args):
     """
     Exit the program.
     """
-    print('Goodbye!')
+    end()
     sys.exit()
 
 def remove(args):
