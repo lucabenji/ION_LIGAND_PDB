@@ -6,7 +6,7 @@ It contains functions that check, parse, and execute commands for ION_LIGAND_PDB
 from typing import List
 import sys
 
-from src.parser import command_parser, command_subparsers
+from src.parser.parser import command_parser, command_subparsers
 from src.utils import ExecutionError, HelpRequest, ParserError
 
 

@@ -2,10 +2,15 @@
 
 ## Description
 
-ION_LIGAND_PDB is a python-based program that creates Protein Data Bank (PDB) files of metal ion-ligand systems with costumizable concentration.
-The program is desined for people who want to generate metal ion systems for (but not only) molecular dynamics (MD) symulations.
-The PDB files are readily usable for generating topology and input coordinates files for all the most used MD softwares (Amber, Gromax, NAMD, etc).
-They can also be visualized with common molecular visualizer programs (Chimera, PyMOL, VMD, etc).
+ION_LIGAND_PDB is a Python-based program for generating Protein Data Bank (PDB) files of metal ion–ligand systems.
+
+The program is designed for researchers who need to build metal ion–ligand systems for molecular dynamics (MD) simulations, as well as for other computational chemistry and molecular modeling applications.
+
+Users can specify any metal ion and provide ligands in common molecular file formats, including PDB, MOL2, and SDF. The program allows users to customize key system parameters, such as ion/ligand concentrations and simulation box dimensions.
+
+The resulting PDB files can be readily used as input for generating topology and coordinate files with widely used MD simulation packages, including AMBER, GROMACS, and NAMD.
+
+Generated structures can also be inspected and visualized using popular molecular visualization programs such as Chimera, PyMOL, and VMD.
 
 ## Table of Contents
 
@@ -16,13 +21,13 @@ They can also be visualized with common molecular visualizer programs (Chimera, 
 
 ## Features
 
-- **Customize ion/ligand number and concentration** - Select the preferred number or concentration of ion/ligand in your system.
-
 - **Get ligand from common molecular file formats** - Select ligands from PDB (.pdb), MOL2 (.mol2), and SDF (.sdf) files
+
+- **Customize ion/ligand number and concentration** - Select the preferred number or concentration of ion/ligand in your system.
 
 - **Choose system box dimension and volume for MD simulations** - Customize system box for your simulations
 
-- **Generate PDB files readily usable for topology and input coordinates** - Obtained PDB files are readily usable for generating topology and input coordinates in most used MD softwares.
+- **Generate PDB files for topology and input coordinates** - Obtained PDB files are readily usable for generating topology and input coordinates in most used MD softwares.
 
 - **Visualize new PDBs with common molecular visualizers** - Obtained PDB files can be visualized with Chimera, PyMOL, VMD, etc.
 
