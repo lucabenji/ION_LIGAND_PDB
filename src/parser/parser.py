@@ -74,7 +74,7 @@ lig_parser.set_defaults(func=add_ligand)
 
 # generate_pdb parser
 pdb_parser = command_subparsers.add_parser('generate_pdb')
-pdb_parser.add_argument('PDB_FILE', type=str, help='Name of the pdb file.')
+pdb_parser.add_argument('pdb_file', type=str, help='Name of the pdb file.', metavar='PDB_FILE.pdb')
 pdb_parser.set_defaults(func=generate_pdb)
 
 # quit parser

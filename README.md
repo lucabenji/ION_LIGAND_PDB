@@ -61,7 +61,23 @@ ION_LIGAND_PDB works with commands provided by the user. Commands follow the syn
 > command keyword
 ```
 
-Commands can be given through an input file or directly from the terminal, after the program is lauched.
+Commands can be given through two different operative mode:
+
+1. **Input file mode**
+
+    ```bash
+    ion_ligand_pdb -i input.in        
+    ```
+
+    User can provide commands by an input file with all the istructions.
+
+2. **Interactive mode**
+
+    ```bash
+    ion_ligand_pdb
+    ```
+
+    If no input file is provided, commands can be given directly from the terminal.
 
 ## Available commands
 
@@ -80,7 +96,7 @@ Commands can be given through an input file or directly from the terminal, after
 - **generate_pdb**
 
     ```bash
-    generate_pdb [-h] PDB_FILE
+    generate_pdb [-h] PDB_FILE.pdb
     ```
 
 - **quit**
@@ -108,3 +124,12 @@ Commands can be given through an input file or directly from the terminal, after
     ```
 
 ## Examples
+
+Some examples are provided in the directory 'examples/'.
+After the istallation, do:
+
+```bash
+cd examples/
+ion_ligand_pdb -i example1.in #Generate the pdb for a system with 4 Ni ion and 10 NME in a 4x4x4 nm box
+ion_ligand_pdb -i example2.in #Generate the pdb for a system with 0.5 M of Ca and 0.1 M of EDTA in a 144 nm^3 box 
+```

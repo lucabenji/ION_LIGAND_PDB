@@ -1,5 +1,7 @@
 """
 Module containing all the available commands of ION_LIGAND_PDB program.
+
+All commands take as arguments 'args' since they act on arguments parsed by src.parsing.parsing module.
 """
 
 import numpy as np
@@ -138,6 +140,10 @@ def remove(args):
     """
     Remove a residue from the system.
     """
+    # error if no residue to remove
+    if Syst.is_empty:
+        msg = 'System is empty! Can not remove any residue.'
+        raise ExecutionError(message=msg)
 
     resname = args.RES
 
@@ -150,7 +156,7 @@ def remove(args):
     elif Syst.residue_exists(resname):
         Syst.remove_residue(resname)
         print('\nResidue {} has been removed from the system.'.format(resname))
-        
+
     else:
         msg = f'No residue with name {resname} has been found.'
         raise ExecutionError(message=msg)
