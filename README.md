@@ -69,7 +69,7 @@ Commands can be given through two different operative mode:
     ion_ligand_pdb -i input.in        
     ```
 
-    User can provide commands by an input file with all the istructions.
+    User can provide commands from an input file with all the istructions.
 
 2. **Interactive mode**
 
@@ -87,11 +87,20 @@ Commands can be given through two different operative mode:
     add_ion [-h] [-cutoff CUTOFF] [-n N | -conc CONC] ION
     ```
 
+    Select the ion and its quantity. The user must provide the ion name, with maximum 3 characters.  
+    The user can also select the number of ions or its molar concentration. Default value is 1 ion.  
+    Ions will be randomly placed inside the system, with a minimum distance between other residues specified by CUTOFF (default is 4.0 Ang).
+
 - **add_ligand**
 
     ```bash
     add_ligand [-h] -f FILE_NAME [-cutoff CUTOFF] [-n N | -conc CONC] [LIG]
     ```
+
+    Select the ligand molecule and its quantity. The ligand PDB, SDF or mol2 file must be provided.  
+    The user can specify the ligand number or its concentration. Default value is 1 ligand molecule.  
+    A residue name can be provided with maximum three characters. If not, the default LIG name will be used.  
+    Ligands will be randomly placed inside the system, with a minimum distance between other residues specified by CUTOFF (default is 4.0 Ang).
 
 - **generate_pdb**
 
@@ -99,11 +108,15 @@ Commands can be given through two different operative mode:
     generate_pdb [-h] PDB_FILE.pdb
     ```
 
+    Generate the PDB file with name PDB_FILE.pdb.
+
 - **quit**
 
     ```bash
     quit
     ```
+
+    Exit the program.
 
 - **remove**
 
@@ -111,11 +124,16 @@ Commands can be given through two different operative mode:
     remove [-h] RES | all
     ```
 
+    Remove residues (ion or ligand) from the system. RES is the residue name of the residue to be removed.  
+    If 'all' is specified, all residues will be removed.
+
 - **set_box**
 
     ```bash
     set_box [-h] DIM
     ```
+
+    Set the system square box edge dimension in Ang.
 
 - **set_volume**
 
