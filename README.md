@@ -33,6 +33,25 @@ Generated structures can also be inspected and visualized using popular molecula
 
 ## Installation
 
+1. Clone the repository:  
+
+    ```bash
+    git clone https://github.com/lucabenji/ION_LIGAND_PDB.git
+    cd ION_LIGAND_PDB
+    ```
+
+2. Install the program (as editable):  
+
+    """bash
+    pip install -e .
+    """
+
+3. Launch the program:
+
+    """bash
+    ion_ligand_pdb
+    """
+
 ## Usage
 
 ## Examples
