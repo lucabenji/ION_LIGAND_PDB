@@ -7,4 +7,4 @@ add_ion NI -n 4 #add 4 Ni ions
 
 add_ligand NME -n 10 -f examples/nme.pdb #add 10 NME ligand from nme.pdb
 
-generate_pdb #generate the PDB file
+generate_pdb  4Ni-10nme.pdb #generate the PDB file

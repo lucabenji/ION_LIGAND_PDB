@@ -2,6 +2,7 @@
 Module containing useful functions for placing residues and writing pdb files.
 """
 
+from datetime import datetime
 import numpy as np
 from typing import Optional, List
 
@@ -229,6 +230,48 @@ def random_place_molecules(molecule_coords: np.ndarray, box_dim: np.ndarray, cut
 
 # Function for pdb file
 
+def write_pdb_header(box: np.ndarray) -> List[str]:
+    """
+   Generate a list of strings for a PDB file header.
+   1st line is HEADER section with datetime.
+   2nd line contains AUTHOR name.
+   3rd line contains box information.
+
+    Parameters
+    ----------
+    box : np.ndarray
+        System box dimension in a (3, ) array.
+
+    Returns
+    -------
+    List[str]
+        List of header lines.
+    """
+
+    header_lines = []
+    
+
+    # HEADER
+    date = datetime.now().strftime("%d-%b-%y").upper()
+    header = "HEADER    {:40}{:>9}\n".format('', date)
+
+    header_lines.append(header)
+
+    #AUTHOR
+    author = 'AUTHOR ION_LIGAND_PDB\n'
+
+    header_lines.append(author)
+
+    #CRYST1
+    # only cubic/rectangular box are supported
+    cryst_line = '\nCRYST1{:9.3f}{:9.3f}{:9.3f}{:7.2f}{:7.2f}{:7.2f}\n'.format(box[0], box[1], box[2], 90.0, 90.0, 90,0)
+
+    header_lines.append(cryst_line)
+
+    return header_lines
+
+
+
 def write_pdb_line(atom_id: int, atom_name: str, res_name: str, res_number: int, coords: np.ndarray, 
                    alternate_location=' ', chain_id=' ', element=' ') -> str:
     """
@@ -261,7 +304,7 @@ def write_pdb_line(atom_id: int, atom_name: str, res_name: str, res_number: int,
     
     format_line = (
         "ATOM  {atom_id:5d} {atom_name:>3s}{alternate_location} {residue_name:<3s} {chain_id}{residue_number:4d}    "
-        "{x:8.3f}{y:8.3f}{z:8.3f}  1.00  0.00           {element:>2}"
+        "{x:8.3f}{y:8.3f}{z:8.3f}  1.00  0.00           {element:>2}\n"
     )
 
     pdb_line = format_line.format(  atom_id=atom_id, 

@@ -1,0 +1,10 @@
+# example input for create a system with 0.5 M CA and 0.1 M EDTA
+# comments start with '#'
+
+set_volume 144000 #create a cubic box 144000 Ang^3 
+
+add_ion Ca -conc 0.5 -cutoff 20 #add Ca ions with cutoff 20 Ang
+
+add_ligand EDTA -conc 0.1 -f edta.sdf #add EDTA from sdf file
+
+generate_pdb  ca-edta.pdb #generate the PDB file

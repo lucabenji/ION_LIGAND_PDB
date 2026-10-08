@@ -27,7 +27,7 @@ def add_ion(args):
     ion_name = args.ION
     cutoff = args.cutoff
 
-    print('\nAdding ion with name {} using cutoff {:.2f} Ang'.format(ion_name, cutoff))
+    print('\nAdding ion with name {} using cutoff {:.2f} Ang\n'.format(ion_name, cutoff))
 
     # error if cutoff is more then system dimensions
     if np.any(cutoff > Syst.box):
@@ -36,7 +36,7 @@ def add_ion(args):
 
     # ion name too long
     if len(ion_name) > 3:
-        print('\nWarning! Ion name {} exceeds maximum number of 3 characters. \nIon name will be shortened to {}.'.format(ion_name, ion_name[:3]))
+        print('Warning! Ion name {} exceeds maximum number of 3 characters. \nIon name will be shortened to {}\n.'.format(ion_name, ion_name[:3]))
         ion_name = ion_name[:3]
     
     # crate Residue obj. for ion
@@ -62,7 +62,7 @@ def add_ion(args):
         msg = '{}\n Try to reduce the cutoff or increase system volume.'.format(e.message)
         raise ExecutionError(message=msg)
     
-    print('\nFinal {} concentration is: {:.2f} M.'.format(ion.resname, Syst._get_res_concentration(ion.resname)))
+    print('Final {} concentration is: {:.2f} M\n.'.format(ion.resname, Syst._get_res_concentration(ion.resname)))
 
 
 def add_ligand(args):
@@ -73,11 +73,11 @@ def add_ligand(args):
     res_name = args.LIG
     cutoff = args.cutoff
 
-    print('\nAdding ligand with name {} using cutoff {:.2f} Ang'.format(res_name, cutoff))
+    print('\nAdding ligand with name {} using cutoff {:.2f} Ang\n'.format(res_name, cutoff))
 
     # ligand resname too long
     if len(res_name) > 3:
-        print('Warning! Ligand residue name {} exceeds maximum number of 3 characters. Ligand residue name will be shortened to {}.'.format(res_name, res_name[:3]))
+        print('Warning! Ligand residue name {} exceeds maximum number of 3 characters. Ligand residue name will be shortened to {}\n.'.format(res_name, res_name[:3]))
         res_name = res_name[:3]
     
     # error if cutoff is more then system dimensions
@@ -103,7 +103,7 @@ def add_ligand(args):
             raise ExecutionError(message=msg)
 
     # add ligand to system
-    print('\nAdding {} ligands.'.format(n))
+    print('Adding {} ligands\n.'.format(n))
     try:
         Syst.add_residue(res=lig, cutoff = cutoff, n=n)
     # error when placing ligands
@@ -111,14 +111,20 @@ def add_ligand(args):
         msg = '{}\n Try to reduce the cutoff or increase system volume.'.format(e.message)
         raise ExecutionError(message=msg)
 
-    print('Final {} concentration is: {:.3f} M.'.format(lig.resname, Syst._get_res_concentration(lig.resname)))
+    print('Final {} concentration is: {:.3f} M.\n'.format(lig.resname, Syst._get_res_concentration(lig.resname)))
 
 def generate_pdb(args):
     """
     Generate the PDB file of the system.
     """
+    filename = args.pdb_file
     
-    Syst.generate_pdb()
+    if Syst.is_empty:
+        msg = 'System is empty! Can not generate the PDB file.'
+        raise ExecutionError(message=msg)
+    else:
+        Syst.generate_pdb(filename)
+        print('System saved in {}'.format(filename))
 
 
 def quit(args):

@@ -7,7 +7,7 @@ From a System object, it is possible to generate a pdb file with all the placed 
 import numpy as np
 import typing as tp
 
-from src.utils import random_place_molecules, write_pdb_line, evaluate_concentration
+from src.utils import random_place_molecules, write_pdb_header, write_pdb_line, evaluate_concentration
 from src import Residue
 from src.utils import PlacingError, BoxError
 
@@ -150,6 +150,21 @@ class System:
         """
         return len(self.residues)
     
+    @property
+    def is_empty(self)-> bool:
+        """
+        Return True if no residue is present in the system.
+
+        Returns
+        -------
+        bool
+            True if no residue is present in the system.
+        """
+        if len(self.residues) == 0:
+            return True
+        else:
+            return False
+    
     def residue_exists(self, resname: str) -> bool:
         """
         Returne True if a residue with resname is present in the system.
@@ -220,22 +235,37 @@ class System:
             count_res += 1
             count_atm += res.n_atoms
 
-    def generate_pdb(self):
+    def generate_pdb(self, filename:str):
         """
         Generate a PDB file of the system.
+
+        Parameters
+        ----------
+        filename: str
+            Name of the output pdb file.
         """
 
-        for res in self.residues:
-            for i in range(res.n_atoms):
-                pdb_line = write_pdb_line(atom_id=res.atom_id[i], 
+        # create header
+        header = write_pdb_header(self.box)
+
+        with open(filename, "w") as f:
+
+            #write header
+            for line in header:
+                f.write(line)
+            
+            #write reasidues
+            for res in self.residues:
+                for i in range(res.n_atoms):
+                    pdb_line = write_pdb_line(atom_id=res.atom_id[i], 
                                               atom_name=res.atoms[i], 
                                               res_name=res.resname,
                                               res_number = res.res_num,
                                               coords = res.coords[i]
                                               ) 
-                print(pdb_line)
-            print('TER')
-        print('END')
+                    f.write(pdb_line)
+                f.write('TER\n')
+            f.write('END\n')
 
     def _get_number_of_res(self, resname: str) -> int:
         """
