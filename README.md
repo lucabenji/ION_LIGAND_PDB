@@ -42,15 +42,15 @@ Generated structures can also be inspected and visualized using popular molecula
 
 2. Install the program (as editable):  
 
-    """bash
+    ```bash
     pip install -e .
-    """
+    ```
 
 3. Launch the program:
 
-    """bash
+    ```bash
     ion_ligand_pdb
-    """
+    ```
 
 ## Usage
 
