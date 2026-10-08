@@ -74,7 +74,7 @@ lig_parser.set_defaults(func=add_ligand)
 
 # generate_pdb parser
 pdb_parser = command_subparsers.add_parser('generate_pdb')
-pdb_parser.add_argument('pdb_file', type=str, help='Name of the pdb file.')
+pdb_parser.add_argument('PDB_FILE', type=str, help='Name of the pdb file.')
 pdb_parser.set_defaults(func=generate_pdb)
 
 # quit parser
@@ -83,7 +83,7 @@ quit_parser.set_defaults(func=quit)
 
 # remove parser
 rm_parser = command_subparsers.add_parser('remove')
-rm_parser.add_argument('RES', type=str, help='Name of the residue to remove.')
+rm_parser.add_argument('RES', type=str, help='Name of the residue to remove. Select "all" to remove all residues.', metavar='RES | all')
 rm_parser.set_defaults(func=remove)
 
 # set_box parser

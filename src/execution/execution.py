@@ -57,7 +57,7 @@ def execute_command(command: List[str], interactive_mode = False):
         check_command(command)
     # help request
     except HelpRequest as e:
-        command_subparsers.choices[command_name[0]].print_help()
+        command_subparsers.choices[command_name].print_help()
         execution = False
     #command not available
     except ExecutionError as e:

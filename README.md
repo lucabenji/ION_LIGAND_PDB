@@ -17,6 +17,7 @@ Generated structures can also be inspected and visualized using popular molecula
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Available commands](#available-commands)
 - [Examples](#examples)
 
 ## Features
@@ -53,5 +54,57 @@ Generated structures can also be inspected and visualized using popular molecula
     ```
 
 ## Usage
+
+ION_LIGAND_PDB works with commands provided by the user. Commands follow the syntax:
+
+```bash
+> command keyword
+```
+
+Commands can be given through an input file or directly from the terminal, after the program is lauched.
+
+## Available commands
+
+- **add_ion**
+
+    ```bash
+    add_ion [-h] [-cutoff CUTOFF] [-n N | -conc CONC] ION
+    ```
+
+- **add_ligand**
+
+    ```bash
+    add_ligand [-h] -f FILE_NAME [-cutoff CUTOFF] [-n N | -conc CONC] [LIG]
+    ```
+
+- **generate_pdb**
+
+    ```bash
+    generate_pdb [-h] PDB_FILE
+    ```
+
+- **quit**
+
+    ```bash
+    quit
+    ```
+
+- **remove**
+
+    ```bash
+    remove [-h] RES | all
+    ```
+
+- **set_box**
+
+    ```bash
+    set_box [-h] DIM
+    ```
+
+- **set_volume**
+
+    ```bash
+    set_volume [-h] VOL
+    ```
 
 ## Examples

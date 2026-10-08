@@ -140,11 +140,17 @@ def remove(args):
     """
 
     resname = args.RES
-    
-    if Syst.residue_exists(resname):
 
+    # remove all residue
+    if resname == 'all':
+        print('\nRemoving all residues from the system.')
+        Syst.residues = []
+        print('System is now empty.\n')
+
+    elif Syst.residue_exists(resname):
         Syst.remove_residue(resname)
-        print('\n Residue {} has been removed from the system.'.format(resname))
+        print('\nResidue {} has been removed from the system.'.format(resname))
+        
     else:
         msg = f'No residue with name {resname} has been found.'
         raise ExecutionError(message=msg)
