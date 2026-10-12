@@ -13,15 +13,13 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     license='MIT',
     packages=setuptools.find_packages(include=[
-        'src.__init__',
         'src.System',
         'src.Residue',
-        'src.commands.commands',
-        'src.commands.execution',
-        'src.parser.parser',
-        'src.parser.input'
-        'src.utils.errors'
-        'src.utils.file_reader'
+        'src.commands',
+        'srcexecution',
+        'src.parser',
+        'src.utils.errors',
+        'src.utils.file_reader',
         'src.utils.function'        
     ]),
     classifiers=[
@@ -30,10 +28,11 @@ setuptools.setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Topic :: Scientific/Engineering :: Chemistry',
+        'Topic :: Scientific/Engineering :: Molecular Dynamics'
     ],
-    python_requires='>=3.10',
+    python_requires='>=3.8',
     install_requires=[
-        'numpy>=3.0'
+        'numpy>=1.0'
     ],
     entry_points={
         'console_scripts': [
