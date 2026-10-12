@@ -9,7 +9,7 @@ from src.execution import execute_command
 from src.utils.errors import InputFileError
 
 # fancy start printing
-from src.utils import start
+from src.utils.fancy_print import start
 
 # check operation mode
 interactive_mode = interactive_mode_status

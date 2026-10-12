@@ -10,10 +10,9 @@ import sys
 from src import Residue
 from src import System
 
-from src.utils import evaluate_n_from_concentration
-from src.utils import ExecutionError, LigandFileError, PlacingError
-from src.utils.errors import BoxError
-from src.utils import end
+from src.utils.functions import evaluate_n_from_concentration
+from src.utils.errors import ExecutionError, LigandFileError, PlacingError,  BoxError
+from src.utils.fancy_print import end
 
 # System object where all the commands are acting.
 Syst = System()
@@ -89,10 +88,12 @@ def add_ligand(args):
     
     # create Residue obj. for ligand
     lig_file = args.file_name
+    print('Reading ligand from file {}.'.format(lig_file))
     try:
         lig = Residue.read_from_file(filename=lig_file, res_name=res_name)
     except LigandFileError as e:
-        raise ExecutionError(message=e.message)
+        msg(f'Error with file {e.filename}. {e.message}')
+        raise ExecutionError(message=msg)
 
     n = args.N
     if args.conc:

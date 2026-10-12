@@ -7,6 +7,8 @@ Supported file formats: PBD (.pdb), MOL2 (.pdb), SDF (.sdf)
 import numpy as np
 from typing import List, Tuple
 
+from src.utils.errors import LigandFileError
+
 
 def read_from_pdb(filename: str) -> Tuple[List, np.ndarray]:
     """
@@ -28,6 +30,11 @@ def read_from_pdb(filename: str) -> Tuple[List, np.ndarray]:
     -------
     Tuple[List, np.ndarray]
         List of atom names and array of coordinates.
+
+    Raise
+    -----
+    LigandFileError
+        Error when extracting atom names and coordinates from the PDB file.
     """
 
     atoms = []
@@ -38,10 +45,14 @@ def read_from_pdb(filename: str) -> Tuple[List, np.ndarray]:
                 
             if line.startswith("ATOM") or line.startswith("HETATM"):
                 
-                atom_name = line[12:16].strip()  # Atom name
-                x = float(line[30:38].strip())   # X coordinate
-                y = float(line[38:46].strip())   # Y coordinate
-                z = float(line[46:54].strip())   # Z coordinate 
+                try:
+                    atom_name = line[12:16].strip()  # Atom name
+                    x = float(line[30:38].strip())   # X coordinate
+                    y = float(line[38:46].strip())   # Y coordinate
+                    z = float(line[46:54].strip())   # Z coordinate
+                except ValueError as e:
+                    msg = 'Could not properly extract atom names and coordinates from the PDB file.'
+                    raise LigandFileError(filename=filename, message=msg) 
                 
                 atoms.append(atom_name)
                 coordinates.append([x, y, z])
@@ -65,6 +76,11 @@ def read_from_mol2(filename: str) ->  Tuple[List, np.ndarray]:
     -------
     Tuple[List, np.ndarray]
         List of atom names and array of coordinates.
+
+    Raise
+    -----
+    LigandFileError
+        Error when extracting atom names and coordinates from the MOL2 file.
     """
 
     atoms = []
@@ -86,10 +102,14 @@ def read_from_mol2(filename: str) ->  Tuple[List, np.ndarray]:
                 atom_line = line.split()
                 if len(atom_line) >= 6:  
 
-                    atom_name = atom_line[1] # Atom name
-                    x = float(atom_line[2])  # X coordinate
-                    y = float(atom_line[3])  # Y coordinate
-                    z = float(atom_line[4])  # Z coordinate
+                    try:
+                        atom_name = atom_line[1] # Atom name
+                        x = float(atom_line[2])  # X coordinate
+                        y = float(atom_line[3])  # Y coordinate
+                        z = float(atom_line[4])  # Z coordinate
+                    except ValueError as e:
+                        msg='Could not properly extract atom names and coordinates from the MOL2 file.'
+                        raise LigandFileError(filename=filename, message=msg)
 
                     atoms.append(atom_name)
                     coordinates.append([x, y, z])
@@ -114,6 +134,11 @@ def read_from_sdf(filename: str) -> Tuple[List, np.ndarray]:
     -------
     Tuple[List, np.ndarray]
         List of atom names and array of coordinates.
+
+    Raise
+    -----
+    LigandFileError
+        Error when extracting atom names and coordinates from the SDF file.
     """
 
     atoms = []  # List to store (atom_name, x, y, z)
@@ -125,9 +150,9 @@ def read_from_sdf(filename: str) -> Tuple[List, np.ndarray]:
     # The 4th line contains the number of atoms
     counts_line = lines[3].split() # In an SDF file, the 4th line contains the number of atoms
     
-    #if len(counts_line) < 2:
-    #    msg = "Invalid SDF file format: missing atom and bond counts."
-    #    raise LigandFileError(filename=filename, message=msg)
+    if len(counts_line) < 2:
+        msg = "Invalid SDF file format: missing atom and bond counts."
+        raise LigandFileError(filename=filename, message=msg)
 
     # Number of atoms
     num_atoms = int(counts_line[0])
@@ -138,10 +163,14 @@ def read_from_sdf(filename: str) -> Tuple[List, np.ndarray]:
     for i in range(num_atoms):
         atom_line = lines[atom_start + i].split()
         if len(atom_line) >= 4:
-            x = float(atom_line[0])  # X coordinate
-            y = float(atom_line[1])  # Y coordinate
-            z = float(atom_line[2])  # Z coordinate
-            atom_name = atom_line[3] # atom name
+            try:
+                x = float(atom_line[0])  # X coordinate
+                y = float(atom_line[1])  # Y coordinate
+                z = float(atom_line[2])  # Z coordinate
+                atom_name = atom_line[3] # atom name
+            except ValueError as e:
+                msg='Could not properly extract atom names and coordinates from the MOL2 file.'
+                raise LigandFileError(filename=filename, message=msg)
             
             atoms.append(atom_name)
             coordinates.append([x, y, z])

@@ -7,7 +7,7 @@ The main parser activates the interactive mode if no command input file is provi
 import argparse
 
 from src.commands import *
-from src.utils import  ParserError
+from src.utils.errors import  ParserError
 
 # Main parser
 main_parser = argparse.ArgumentParser(description="Ion Ligand PDB generator by Luca B.", add_help=True)

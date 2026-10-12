@@ -7,7 +7,7 @@ from typing import List
 import sys
 
 from src.parser.parser import command_parser, command_subparsers
-from src.utils import ExecutionError, HelpRequest, ParserError
+from src.utils.errors import ExecutionError, HelpRequest, ParserError
 
 
 # list of all commands
