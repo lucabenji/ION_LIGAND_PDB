@@ -149,5 +149,5 @@ After the istallation, do:
 ```bash
 cd examples/
 ion_ligand_pdb -i example1.in #Generate the pdb for a system with 4 Ni ion and 10 NME in a 4x4x4 nm box
-ion_ligand_pdb -i example2.in #Generate the pdb for a system with 0.5 M of Ca and 0.1 M of EDTA in a 144 nm^3 box 
+ion_ligand_pdb -i example2.in #Generate the pdb for a system with 0.5 M of Ca and 0.1 M of EDTA in a 500 nm^3 box 
 ```
