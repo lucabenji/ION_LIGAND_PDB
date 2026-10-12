@@ -55,7 +55,7 @@ def add_ion(args):
             raise ExecutionError(message=msg)
             
     # add ions to system
-    print('\nAdding {} ions.'.format(n))
+    print(f'Adding {n} {ion.resname} ions.\n')
     try:
         Syst.add_residue(res=ion, cutoff=cutoff, n=n)
     # error when placing molecules
@@ -63,7 +63,7 @@ def add_ion(args):
         msg = '{}\n Try to reduce the cutoff or increase system volume.'.format(e.message)
         raise ExecutionError(message=msg)
     
-    print('Final {} concentration is: {:.2f} M\n.'.format(ion.resname, Syst._get_res_concentration(ion.resname)))
+    print('Final {} concentration is: {:.2f} M.\n'.format(ion.resname, Syst._get_res_concentration(ion.resname)))
 
 
 def add_ligand(args):
@@ -74,11 +74,11 @@ def add_ligand(args):
     res_name = args.LIG
     cutoff = args.cutoff
 
-    print('\nAdding ligand with name {} using cutoff {:.2f} Ang\n'.format(res_name, cutoff))
+    print('\nAdding ligand with name {} using cutoff {:.2f} Ang.\n'.format(res_name, cutoff))
 
     # ligand resname too long
     if len(res_name) > 3:
-        print('Warning! Ligand residue name {} exceeds maximum number of 3 characters. Ligand residue name will be shortened to {}\n.'.format(res_name, res_name[:3]))
+        print('Warning! Ligand residue name {} exceeds maximum number of 3 characters. Ligand residue name will be shortened to {}.\n'.format(res_name, res_name[:3]))
         res_name = res_name[:3]
     
     # error if cutoff is more then system dimensions
@@ -88,11 +88,11 @@ def add_ligand(args):
     
     # create Residue obj. for ligand
     lig_file = args.file_name
-    print('Reading ligand from file {}.'.format(lig_file))
+    print('Reading ligand from file {}.\n'.format(lig_file))
     try:
         lig = Residue.read_from_file(filename=lig_file, res_name=res_name)
     except LigandFileError as e:
-        msg(f'Error with file {e.filename}. {e.message}')
+        msg = (f'Error with file {e.filename}. {e.message}')
         raise ExecutionError(message=msg)
 
     n = args.N
@@ -106,7 +106,7 @@ def add_ligand(args):
             raise ExecutionError(message=msg)
 
     # add ligand to system
-    print('Adding {} ligands\n.'.format(n))
+    print(f'Adding {n} {lig.resname} ligands.\n')
     try:
         Syst.add_residue(res=lig, cutoff = cutoff, n=n)
     # error when placing ligands
@@ -126,8 +126,12 @@ def generate_pdb(args):
         msg = 'System is empty! Can not generate the PDB file.'
         raise ExecutionError(message=msg)
     else:
-        Syst.generate_pdb(filename)
-        print('System saved in {}'.format(filename))
+        try:
+            Syst.generate_pdb(filename)
+            print('\nSystem saved in {}'.format(filename))
+        except FileNotFoundError:
+            msg = (f'Can not generate {filename}. Check its location.')
+            raise ExecutionError(message=msg)
 
 
 def quit(args):
@@ -167,7 +171,7 @@ def set_box(args):
     Set the box dimension of the system (in Ang).
     """
     dim = args.DIM
-    print('\nSetting system cubic box dimension to {:.1f} Ang.'.format(dim = args.DIM))
+    print('\nSetting system cubic box dimension to {:.1f} Ang.'.format(dim))
     # generate cubic box
     box = np.array([dim, dim, dim])
 
